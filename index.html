@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>카피몬을 막아라 2차시</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gothic+A1:wght@400;600;800&family=IBM+Plex+Mono:wght@500;700&display=swap">
+<style>
+/* 레이아웃: 위쪽 진행 레일 + 한 번에 한 활동 + 아래 고정 이동 바.
+   테마 2개 — 1차시 '수업 창(window)' (PPT 템플릿 색), 2차시 '방탈출' (어두운 방송실). */
+:root, body.t-lesson{
+  --bg:#FCE2DB; --surface:#FFFFFF; --surface2:#FFFAED; --bar:#D9EDF4; --ink:#532F23; --line:#594638; --soft:#EFE3DC;
+  --muted:#8A6E62; --accent:#D9455F; --accent-soft:#FDE4EA; --lav:#E1E6FF; --lav2:#D1C2E8; --pinkbar:#FDD3E1; --cream:#F9ECCF;
+  --field:#FFF4F6; --field-line:#E7A6B5; --ans-ink:#D62F3C;
+  --ok:#2E9E6A; --ok-soft:#E3F5EA; --warn:#D98A00; --warn-soft:#FFF1D0; --no:#D9455F; --no-soft:#FDE4EA;
+  --teacher:#7B4FC9; --teacher-soft:#EEE6FB;
+  --card-bg:#FFFFFF; --card-ink:#532F23; --card-line:#594638;
+  --top-bg:#FFFFFF; --top-ink:#532F23;
+  --f-display:"Jua","Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Jua","Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-note:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:18px; --bw:2.5px;
+  color-scheme:light;
+}
+body.t-escape{
+  --bg:#0F1218; --surface:#191E27; --surface2:#141820; --bar:#232A36; --ink:#EDE6D6; --line:#343C4B; --soft:#232A36;
+  --muted:#9AA3B5; --accent:#E9B949; --accent-soft:#3A3322; --lav:#2A3140; --lav2:#3A4356; --pinkbar:#3A3322; --cream:#2A2618;
+  --field:#0D1016; --field-line:#E9B949; --ans-ink:#E9B949;
+  --ok:#3CCB8F; --ok-soft:#14322A; --warn:#F0A63A; --warn-soft:#3A2C14; --no:#FF5C63; --no-soft:#3A1B1F;
+  --teacher:#B796FF; --teacher-soft:#2A2340;
+  --card-bg:#F1E6CC; --card-ink:#2A2117; --card-line:#2A2117;
+  --top-bg:#0A0C10; --top-ink:#EDE6D6;
+  --f-display:"Black Han Sans","Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-note:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --r:12px; --bw:1.5px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.6;-webkit-text-size-adjust:100%;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));transition:background .3s}
+body.t-escape{font-size:17px;background:radial-gradient(1200px 600px at 50% -200px,#26303F 0%,rgba(15,18,24,0) 70%),repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 32px),repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 32px),#0F1218}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* ── 상단 ── */
+.top{position:sticky;top:0;z-index:20;background:var(--top-bg);color:var(--top-ink);padding-top:env(safe-area-inset-top,0px);border-bottom:var(--bw) solid var(--line)}
+.t-lesson .top{background:var(--bar)}
+.top .wrap{display:flex;align-items:center;gap:10px;padding-block:9px}
+.brand{font-family:var(--f-display);font-size:20px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand .c{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2.5px solid currentColor;font-family:var(--f-note);font-weight:800;font-size:15px;background:var(--surface)}
+.t-escape .brand .c{border-color:var(--accent);color:var(--accent);background:transparent}
+.hearts{font-size:15px;letter-spacing:2px;white-space:nowrap}
+.hearts i{font-style:normal}
+.hearts i:nth-child(1){color:#fff;-webkit-text-stroke:1.5px var(--line)}
+.hearts i:nth-child(2){color:var(--lav2);-webkit-text-stroke:1.5px var(--line)}
+.hearts i:nth-child(3){color:#FCE9A6;-webkit-text-stroke:1.5px var(--line)}
+.t-escape .hearts{display:none}
+.who{font-size:13.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sp{flex:1}
+.hchip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:14px;font-weight:700;white-space:nowrap;background:var(--soft);font-variant-numeric:tabular-nums;min-height:36px}
+.t-escape .hchip{font-family:var(--f-mono);background:#1A1F28;border:1px solid var(--line)}
+.t-escape #timer{color:#FF8A8F;font-size:16px;letter-spacing:.04em;text-shadow:0 0 12px rgba(255,92,99,.45)}
+.hchip.warn{background:var(--warn)!important;color:#1B1405!important;text-shadow:none!important}
+.hchip.over{background:var(--no)!important;color:#fff!important;text-shadow:none!important}
+.keybtn,.tbtn{border:var(--bw) solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:700;min-height:40px;white-space:nowrap}
+.t-escape .keybtn{border-color:var(--accent);color:var(--accent);background:transparent}
+.tbtn{border-color:var(--teacher);color:var(--teacher)}
+.tbtn[aria-pressed="true"]{background:var(--teacher);color:#fff}
+.bar{height:6px;background:var(--soft)}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.teacher-flag{background:var(--teacher);color:#fff;font-size:13px;text-align:center;padding:5px 8px;font-family:var(--f-note)}
+.keys-flag b{font-family:var(--f-mono);font-size:15px;background:rgba(255,255,255,.22);padding:1px 8px;border-radius:6px;margin:0 2px}
+
+/* ── 레일 ── */
+.rail{background:var(--surface);border-bottom:var(--bw) solid var(--line)}
+.t-escape .rail{background:#12161D}
+.rail .wrap{display:flex;gap:8px;overflow-x:auto;padding-block:10px;scrollbar-width:thin;align-items:center}
+.chip{flex:none;display:flex;align-items:center;gap:7px;border:var(--bw) solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px 5px 5px;font-size:15px;min-height:42px}
+.chip .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--soft);font-size:13px;font-variant-numeric:tabular-nums;font-family:var(--f-note);font-weight:800}
+.chip.cur{background:var(--pinkbar)}
+.t-escape .chip.cur{background:var(--accent-soft);border-color:var(--accent)}
+.chip.cur .n{background:var(--accent);color:#fff}
+.t-escape .chip.cur .n{color:#1B1405}
+.chip.done .n{background:var(--ok);color:#fff}
+.chip.locked{opacity:.45}
+.chip .lk{font-size:12px}
+.period-tag{flex:none;font-size:12px;color:var(--muted);padding:0 2px 0 6px;font-family:var(--f-note);font-weight:800}
+
+/* ── 섹션 머리 ── */
+main{padding-block:24px 10px}
+.eyebrow{font-size:14px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;font-family:var(--f-note);font-weight:700}
+.t-escape .eyebrow{font-family:var(--f-mono);color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.sec-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
+h1.st{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,4.4vw,36px);line-height:1.2;margin:0;text-wrap:balance;flex:1;min-width:0}
+.t-lesson h1.st{flex:0 1 auto;background:var(--bar);border:var(--bw) solid var(--line);border-radius:999px;padding:8px 26px}
+.t-lesson h1.st::before{content:"♡ ";color:var(--accent)}
+.t-lesson h1.st::after{content:" ♡";color:var(--accent)}
+.t-escape h1.st{font-size:clamp(30px,5vw,44px);letter-spacing:.02em;text-shadow:0 2px 0 rgba(0,0,0,.4)}
+.lead{color:var(--muted);margin:0 0 20px;max-width:68ch;font-family:var(--f-note);font-size:17px}
+.t-lesson .lead{color:var(--ink)}
+.lead b{color:var(--accent)}
+.qbtn{flex:none;border:var(--bw) solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px;font-size:14px;min-height:38px;color:var(--muted)}
+.qbtn.on{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.qbox{margin:-4px 0 16px}
+
+/* ── 블록 (1차시 = 창문 카드) ── */
+.blk{background:var(--surface);border:var(--bw) solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:18px;position:relative}
+.t-lesson .blk{box-shadow:6px 6px 0 rgba(89,70,56,.12)}
+.t-lesson .blk:not(.info):not(.tfig)::before{content:"";display:block;height:16px;margin:-20px -20px 16px;background:var(--bar);border-bottom:var(--bw) solid var(--line);border-radius:calc(var(--r) - 3px) calc(var(--r) - 3px) 0 0}
+.t-lesson .blk:has(> .blk-head)::before{display:none}
+.blk-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.t-lesson .blk-head{margin:-20px -20px 16px;padding:8px 16px;background:var(--bar);border-bottom:var(--bw) solid var(--line);border-radius:calc(var(--r) - 3px) calc(var(--r) - 3px) 0 0}
+.t-lesson .blk-head::after{content:"♡ ♡ ♡";color:var(--line);letter-spacing:1px;font-size:15px}
+.blk h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:0;flex:1;min-width:0}
+.t-escape .blk h2{font-size:21px;color:var(--accent)}
+.blk .bl{color:var(--muted);font-size:15.5px;margin:0 0 14px;font-family:var(--f-note)}
+.revbtn{flex:none;border:2px solid var(--teacher);color:var(--teacher);background:var(--teacher-soft);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;min-height:34px;font-family:var(--f-note)}
+.info{background:var(--surface2)}
+.t-lesson .info{border-radius:14px;box-shadow:none}
+.info.warn{background:var(--warn-soft)}
+.info.accent{background:var(--surface2)}
+.t-lesson .info.accent{border-color:var(--line);position:relative;padding-left:20px}
+.info p{margin:.4em 0;font-family:var(--f-note)}
+.info.clue{background:var(--cream);border-style:dashed}
+.cl-h{font-family:var(--f-display)!important;font-size:18px;color:var(--accent);margin:.2em 0 .4em!important}
+.tag{display:inline-block;background:var(--lav2);color:var(--ink);border:var(--bw) solid var(--line);border-radius:999px;padding:0 10px;font-size:13px;margin-right:6px;font-family:var(--f-note);font-weight:800}
+
+/* 교사용 그림 */
+.tfig{padding:12px;text-align:center;background:var(--surface)}
+.tfig img{max-width:100%;height:auto;border-radius:12px;display:block;margin:0 auto;max-height:520px;object-fit:contain}
+.tfig{margin:0 0 18px}
+.tfig.small img{max-height:340px}
+.tfig .svgwrap svg{width:100%;height:auto;max-width:760px;display:block;margin:0 auto}
+.tfig figcaption{font-size:14px;color:var(--muted);margin-top:8px;font-family:var(--f-note)}
+.tfig .tlabel{display:inline-block;margin-bottom:8px;background:var(--teacher);color:#fff;font-size:12px;border-radius:999px;padding:2px 10px;font-family:var(--f-note)}
+
+/* ── 본문 + 빈칸 ── */
+.def{margin:.6em 0;line-height:2.3;font-size:18.5px}
+.sub{margin:.4em 0 .2em;line-height:2.3;padding-left:.6em}
+.note{color:var(--muted);font-size:15.5px;margin:.2em 0 .8em;padding-left:.6em;line-height:1.7;font-family:var(--f-note)}
+.def b,.sub b{color:var(--accent)}
+.axis{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:12px}
+.axis>div{background:var(--surface2);border:var(--bw) solid var(--line);border-radius:14px;padding:6px 14px}
+.blank{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;flex-wrap:wrap;max-width:100%}
+.blank input{border:0;border-bottom:3px solid var(--field-line);background:var(--field);border-radius:10px 10px 3px 3px;padding:2px 8px;min-width:3.2em;width:calc(var(--w) * 1.05em + 1.4em);max-width:100%;text-align:center;color:var(--ans-ink);line-height:1.5;font-family:var(--f-body)}
+.blank input::placeholder{color:#C7A3AA;letter-spacing:.08em}
+.t-escape .blank input::placeholder{color:#5D6577}
+.tilebtn{border:2px dashed var(--field-line);background:transparent;color:var(--accent);border-radius:10px;font-size:12.5px;padding:1px 8px;line-height:1.6;min-height:32px;font-family:var(--f-note);font-weight:800}
+.blank.ok input{border-bottom-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.blank.bad input{border-bottom-color:var(--no);background:var(--no-soft);color:var(--no)}
+.ans{display:none;background:var(--teacher-soft);color:var(--teacher);border-radius:8px;padding:1px 8px;font-size:.9em;font-family:var(--f-note);font-weight:800}
+body.revealall .ans,.reveal .ans{display:inline-block}
+.ansbox{display:none;margin-top:10px;background:var(--teacher-soft);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:15px;font-family:var(--f-note)}
+body.revealall .ansbox,.reveal .ansbox{display:block}
+.ansbox b{color:var(--teacher)}
+.field textarea{display:block;width:100%;border:var(--bw) solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface2);resize:vertical;min-height:48px;line-height:1.5;font-family:var(--f-note);font-size:16px;color:var(--ink)}
+.t-escape .field textarea{background:var(--field);border-color:#2E3544}
+.field textarea:focus{border-color:var(--accent);outline:none}
+.field.need textarea:placeholder-shown{border-color:var(--warn)}
+.free .q{margin:0 0 8px;font-size:18px}
+
+/* 단계 */
+.steps{display:grid;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start;border:var(--bw) solid var(--line);border-radius:14px;padding:8px 12px;background:var(--surface2)}
+.stn{flex:none;background:var(--lav);border:var(--bw) solid var(--line);border-radius:999px;padding:2px 10px;font-size:14px;margin-top:12px}
+.step .def{margin:.2em 0}.step .note{margin:0;padding:0}
+
+/* ── 도장 판정 ── */
+.jitems{display:grid;gap:14px}
+.jitems.cards{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.jitem{border:var(--bw) solid var(--line);border-radius:14px;padding:14px;background:var(--surface2);display:flex;flex-direction:column;gap:10px;min-width:0}
+.t-escape .jitems.cards .jitem{background:var(--card-bg);color:var(--card-ink);border-color:var(--card-line);box-shadow:0 6px 0 rgba(0,0,0,.35);transform:rotate(-.4deg)}
+.t-escape .jitems.cards .jitem:nth-child(even){transform:rotate(.5deg)}
+.t-escape .jitems.cards .jitem .field textarea{background:#FFF8E6;color:#2A2117;border-color:#BBA67A}
+.t-escape .jitems.cards .jitem .stamp{background:#FFF8E6;color:#2A2117;border-color:#BBA67A}
+.jitem.ok{box-shadow:inset 0 0 0 3px var(--ok)!important}
+.jitem.bad{box-shadow:inset 0 0 0 3px var(--no)!important}
+.jq{display:flex;gap:8px;font-size:17.5px}
+.t-escape .jq{font-weight:700}
+.jq .num{flex:none;color:var(--accent)}
+.t-escape .jitems.cards .jq .num{color:#B0412F}
+.case-no{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;opacity:.7}
+.t-escape .case-no::before{content:"■ ";color:#B0412F}
+.stamps{display:flex;gap:8px;flex-wrap:wrap}
+.stamp{position:relative;min-width:56px;min-height:50px;padding:6px 12px;border:var(--bw) solid var(--line);border-radius:14px;background:var(--surface);font-size:17px;transition:transform .15s;font-family:var(--f-body)}
+.stamp.sym{font-size:24px;line-height:1}
+.stamp.on{transform:rotate(-6deg);animation:press .28s ease-out;color:#fff!important}
+.stamp.on.ok{background:var(--ok)!important;border-color:var(--ok)!important}
+.stamp.on.warn{background:var(--warn)!important;border-color:var(--warn)!important}
+.stamp.on.no{background:var(--no)!important;border-color:var(--no)!important}
+.stamp.on.neutral{background:var(--accent)!important;border-color:var(--accent)!important}
+@keyframes press{0%{transform:scale(1.35) rotate(-14deg);opacity:.4}70%{transform:scale(.94) rotate(-5deg)}100%{transform:scale(1) rotate(-6deg)}}
+.stamps.mini{display:inline-flex;gap:4px;margin-left:4px}.stamps.mini .stamp{min-width:40px;min-height:38px;font-size:18px;padding:2px 8px}
+.prev{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--f-note)}
+.prev .pv{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:8px;padding:0 6px;border:2px solid var(--line);background:var(--surface)}
+.pv.ok{border-color:var(--ok);color:var(--ok)} .pv.warn{border-color:var(--warn);color:var(--warn)} .pv.no{border-color:var(--no);color:var(--no)}
+.legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:16px}
+.lg{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:10px;color:#fff;font-weight:800}
+.lg.ok{background:var(--ok)} .lg.warn{background:var(--warn)} .lg.no{background:var(--no)}
+.lic{display:inline-flex;gap:3px;align-self:flex-start;background:#fff;border:1.5px solid #C9BBA0;border-radius:999px;padding:4px 8px;color:#222}
+.licsvg{display:block}
+.rec{display:none;margin-top:2px;background:var(--ok-soft);border-radius:10px;padding:8px 12px;font-size:15px;font-family:var(--f-note)}
+.t-escape .jitems.cards .rec{background:#D8EEDF;color:#123B28}
+.rec b{color:var(--ok)}
+.cleared .rec{display:block}
+
+/* ── 분류 ── */
+.pool{display:flex;flex-wrap:wrap;gap:10px;min-height:66px;padding:12px;border:2.5px dashed var(--line);border-radius:14px;background:var(--surface2);margin-bottom:12px}
+.t-escape .pool{border-color:#3A4356;background:#10141A}
+.pool:empty::before{content:"모든 카드를 옮겼어요!";color:var(--ok);align-self:center;padding:0 6px}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.bin{border:var(--bw) solid var(--line);border-radius:14px;background:var(--surface);min-height:120px;display:flex;flex-direction:column;transition:border-color .15s,background .15s}
+.binhead{padding:9px 12px;border-bottom:var(--bw) solid var(--line);background:var(--bar);border-radius:11px 11px 0 0;font-family:var(--f-display)}
+.t-escape .binhead{color:var(--accent)}
+.binhead small{display:block;color:var(--muted);font-size:13px;line-height:1.4;font-family:var(--f-note)}
+.binbody{padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;flex:1}
+.sort.selecting .bin{border-style:dashed;border-color:var(--accent)}
+.bin.over{border-color:var(--accent)!important;background:var(--accent-soft)!important;border-style:solid!important}
+.card{touch-action:none;user-select:none;-webkit-user-select:none;border:var(--bw) solid var(--card-line);background:var(--card-bg);color:var(--card-ink);border-radius:12px;padding:8px 12px;text-align:left;font-size:16px;line-height:1.35;box-shadow:0 3px 0 var(--card-line);max-width:100%;min-height:46px;font-family:var(--f-body)}
+.t-lesson .card{border-width:2.5px;background:#FFFFFF}
+.card small{display:block;color:#7A6A60;font-size:12.5px;margin-top:2px;font-family:var(--f-note)}
+.card.sel{background:#FFE68A;transform:translateY(-2px)}
+.card.dragging{opacity:.3}
+.card.ok{border-color:var(--ok);box-shadow:0 3px 0 var(--ok)}
+.card.bad{border-color:var(--no);box-shadow:0 3px 0 var(--no)}
+.card .ans{margin-top:4px;font-size:12px}
+.ghost{position:fixed;left:0;top:0;z-index:100;pointer-events:none;margin:0;box-shadow:0 10px 24px rgba(0,0,0,.35);background:#FFE68A}
+
+/* ── 순서 ── */
+.olist{display:grid;gap:10px}
+.orow{display:flex;gap:10px;align-items:stretch;border:var(--bw) solid var(--card-line);border-radius:14px;background:var(--card-bg);color:var(--card-ink);padding:10px}
+.orow .rk{flex:none;width:58px;display:grid;place-items:center;text-align:center;border-radius:10px;background:#2A2117;color:#F1E6CC;font-family:var(--f-display);font-size:20px;line-height:1.1}
+.orow .rk small{display:block;font-family:var(--f-note);font-size:11px;opacity:.8}
+.orow .ob{flex:1;min-width:0;display:flex;align-items:center}
+.orow .ob .def{margin:0;line-height:1.5}
+.omv{flex:none;display:flex;flex-direction:column;gap:6px}
+.omv button{width:46px;flex:1;min-height:40px;border:1.5px solid #BBA67A;border-radius:10px;background:#FFF8E6;color:#2A2117;font-size:16px}
+.omv button:disabled{opacity:.3}
+.olist.ok .orow{border-color:var(--ok)}.olist.bad .orow{border-color:var(--no)}
+
+/* ── 출처 조립 ── */
+.photo{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.photo .img{width:180px;max-width:100%;aspect-ratio:4/3;border-radius:10px;background:linear-gradient(180deg,#FF9E6B 0%,#FFC27A 40%,#7AA0D6 41%,#5B7FB8 70%,#3A8C55 71%,#2E6E44 100%);position:relative;overflow:hidden;border:4px solid #fff;box-shadow:0 4px 0 rgba(0,0,0,.3);transform:rotate(-2deg)}
+.photo .img::after{content:"";position:absolute;width:44px;height:44px;border-radius:50%;background:#FFE7A8;left:58%;top:18%}
+.meta{font-size:14.5px;color:var(--muted);line-height:1.65;min-width:0;font-family:var(--f-note)}
+.meta b{color:var(--ink)}
+.citeline{min-height:60px;border:var(--bw) solid var(--accent);border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--surface2);margin-bottom:10px}
+.citeline:empty::before{content:"여기에 출처 문장이 만들어져요";color:var(--muted)}
+.citeline.ok{border-color:var(--ok)}.citeline.bad{border-color:var(--no)}
+.tok{border:1.5px solid var(--card-line);background:var(--card-bg);color:var(--card-ink);border-radius:999px;padding:6px 12px;font-size:15px;min-height:40px;max-width:100%;overflow-wrap:anywhere;font-family:var(--f-note);font-weight:700}
+.citeline .tok{background:var(--accent);color:#1B1405;border-color:var(--accent)}
+.t-lesson .citeline .tok{color:#fff}
+.citeline .tok:not(:last-child)::after{content:","}
+.tokpool{display:flex;flex-wrap:wrap;gap:8px}
+.tok[disabled]{opacity:.25}
+.mini{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;min-height:36px;font-family:var(--f-note)}
+
+/* ── CCL ── */
+.ccl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin:10px 0}
+.ccl{display:flex;gap:12px;border:var(--bw) solid var(--line);border-radius:14px;padding:12px;background:var(--surface2);min-width:0}
+.ccl-ic{flex:none;width:58px;display:flex;justify-content:center;padding-top:4px;color:var(--ink)}
+.ccsvg{display:block}
+.ccl-body{min-width:0}
+.ccl-body .def{margin:0;line-height:2.1;font-size:17px}
+.ccl-body .note{padding:0;margin:4px 0 0}
+.credit{font-size:13px}
+
+/* ── 표 ── */
+.tbl-wrap{overflow-x:auto;margin:8px 0}
+.tbl{border-collapse:separate;border-spacing:0;width:100%;font-size:15.5px;min-width:440px;background:var(--surface);border:var(--bw) solid var(--line);border-radius:12px;overflow:hidden;font-family:var(--f-note)}
+.tbl th,.tbl td{border-bottom:1px solid var(--soft);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:var(--bar);font-family:var(--f-display);font-weight:400}
+.tbl tr:last-child td{border-bottom:0}
+
+/* ── 등록 ── */
+.reg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:center}
+.reg label{display:block;margin:0 0 6px}
+.reg .inp{width:100%;border:var(--bw) solid var(--line);border-radius:14px;padding:12px 14px;font-size:21px;background:var(--surface2);font-family:var(--f-body)}
+.reg .inp:focus{border-color:var(--accent);outline:none}
+.reg .row{margin-bottom:14px}
+.idcard{border-radius:18px;padding:18px;position:relative;overflow:hidden;aspect-ratio:1.6/1;max-width:100%;display:flex;flex-direction:column;justify-content:space-between;border:var(--bw) solid var(--line)}
+.t-lesson .idcard{background:var(--bar);color:var(--ink)}
+.t-escape .idcard{background:linear-gradient(135deg,#2A2F3A,#151920);color:#EDE6D6;border-color:#E9B949}
+.idcard::before{content:"©";position:absolute;right:-18px;bottom:-60px;font-size:200px;line-height:1;opacity:.1;font-weight:800}
+.idcard .t1{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;opacity:.7}
+.idcard .t2{font-family:var(--f-display);font-size:26px}
+.idcard .nm{font-size:27px;font-family:var(--f-display)}
+.idcard .no{font-family:var(--f-mono);font-size:15px;opacity:.85}
+.idcard .seal{position:absolute;right:18px;top:16px;width:66px;height:66px;border-radius:50%;border:3px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-size:12px;transform:rotate(12deg);text-align:center;line-height:1.15;font-family:var(--f-note);font-weight:800}
+
+/* ── 자물쇠 ── */
+.lockp{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-radius:16px;padding:16px 18px;margin:6px 0 18px;background:linear-gradient(180deg,#2B2618,#1C1910);border:2px solid #E9B949;color:#F4E7C4;box-shadow:0 0 0 4px rgba(233,185,73,.08),0 10px 30px rgba(0,0,0,.4)}
+.lockp .lk-ic{flex:none;width:56px;height:56px;display:grid;place-items:center}
+.lockp .lk-body{flex:1;min-width:200px}
+.lockp .lk-t{font-family:"Black Han Sans",var(--f-display);font-size:21px;color:#E9B949;letter-spacing:.04em}
+.lockp .lk-st{display:block;font-size:15px;opacity:.92;margin-top:2px}
+.lockp .lk-meta{font-size:12px;opacity:.65;margin-top:2px;font-family:var(--f-mono)}
+.lk-btn{border:0;border-radius:12px;padding:12px 18px;font-weight:800;font-size:17px;background:#E9B949;color:#1B1405;min-height:54px;box-shadow:0 4px 0 #8C6A1E}
+.lk-btn:disabled{opacity:.55;box-shadow:none}
+.lockp.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.lockp.open{background:linear-gradient(180deg,#123528,#0C251C);border-color:#3CCB8F;color:#DFF7EC}
+.lockp.open .lk-t{color:#3CCB8F}
+.lockp.open .lk-btn{background:#3CCB8F;box-shadow:0 4px 0 #1C7A52}
+.gotletter{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:10px;background:#F1E6CC;color:#123528;font-family:"Black Han Sans",var(--f-display);font-size:27px;margin-left:6px;vertical-align:middle;animation:pop .5s}
+@keyframes pop{0%{transform:scale(0) rotate(-20deg)}70%{transform:scale(1.2) rotate(6deg)}100%{transform:scale(1)}}
+
+/* ── 게이트 ── */
+.gatebox{display:grid;gap:14px;justify-items:start}
+.door{width:100%;border-radius:16px;background:repeating-linear-gradient(90deg,#1E2532 0 22px,#18202B 22px 44px);border:2px solid #E9B949;color:#EDE6D6;padding:26px 22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.door .big-ic{font-family:"Black Han Sans";font-size:44px;line-height:1;color:#E9B949}
+.door .dt{font-family:"Black Han Sans";font-size:25px}
+.door .ds{opacity:.85;font-size:15px}
+.keyrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.keyin{width:9.5em;font-family:var(--f-mono);font-size:30px;font-weight:700;letter-spacing:.3em;text-align:center;border:3px solid #E9B949;border-radius:12px;padding:8px 10px;background:#0B0E13;color:#E9B949}
+.keymsg{font-weight:700;min-height:1.5em}
+.keymsg.bad{color:var(--no)}.keymsg.good{color:var(--ok)}
+.gatebox ul{font-family:var(--f-note)}
+
+/* ── 탈출문 ── */
+.slots{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.slot{width:58px;height:66px;border-radius:12px;border:3px dashed #3A4356;display:grid;place-items:center;font-family:"Black Han Sans";font-size:31px;background:#0D1016}
+.slot.f{border-style:solid;border-color:#E9B949;background:#F1E6CC;color:#2A2117;cursor:pointer}
+.ltiles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ltile{width:58px;height:58px;border-radius:12px;border:2px solid #2A2117;background:#F1E6CC;color:#2A2117;font-family:"Black Han Sans";font-size:29px;box-shadow:0 4px 0 #8C6A1E}
+.ltile[disabled]{opacity:.2;box-shadow:none}
+.ltile.miss{display:inline-grid;place-items:center;border-style:dashed;border-color:#3A4356;background:transparent;color:var(--muted);box-shadow:none;font-family:var(--f-note);font-size:13px}
+.final-ok{font-family:"Black Han Sans";font-size:28px;color:var(--ok)}
+
+/* ── 보스 ── */
+.boss-top{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.mon{width:110px;height:110px;flex:none;position:relative;filter:drop-shadow(0 0 18px rgba(155,100,255,.5))}
+.mon.hit{animation:hit .4s}
+.mon.dead{filter:grayscale(1);opacity:.45;transform:rotate(80deg) translateY(10px);transition:all .6s}
+@keyframes hit{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px) rotate(-6deg)}60%{transform:translateX(8px) rotate(5deg)}}
+.dmg{position:absolute;left:50%;top:0;color:var(--no);font-family:"Black Han Sans";font-size:28px;animation:dmg .8s forwards;pointer-events:none}
+@keyframes dmg{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-40px);opacity:0}}
+.gauges{flex:1;min-width:220px;display:grid;gap:8px}
+.gauge .lab{display:flex;justify-content:space-between;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.gauge .trk{height:16px;border-radius:999px;background:#0B0E13;border:1px solid var(--line);overflow:hidden}
+.gauge .trk i{display:block;height:100%;border-radius:999px;transition:width .4s}
+.gauge.hp i{background:linear-gradient(90deg,#FF5C63,#FF9A5C)} .gauge.en i{background:linear-gradient(90deg,#E9B949,#F6DD8A)}
+.bossmsg{font-weight:700;color:var(--accent)}
+.attack{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 4px}
+.bq{display:flex;gap:10px;align-items:flex-start;padding:10px 6px;border-top:1px solid var(--line)}
+.bq .num{flex:none;font-family:var(--f-mono);font-weight:700;color:var(--accent);width:30px;padding-top:8px}
+.bq .def{margin:0;flex:1;min-width:0;font-size:17px}
+.bq.ok{background:var(--ok-soft);border-radius:10px}
+.bq.bad{background:var(--no-soft);border-radius:10px}
+.bq .mark{flex:none;width:30px;font-size:18px;padding-top:8px;text-align:center}
+.coup{font-size:13px;color:var(--muted)}
+.win{font-family:"Black Han Sans";font-size:27px;color:var(--ok)}
+
+/* ── 버튼·제출 ── */
+.big{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:14px;padding:14px 22px;font-size:19px;background:var(--accent);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.25);min-height:56px;font-family:var(--f-display)}
+.t-escape .big{color:#1B1405;box-shadow:0 4px 0 #8C6A1E}
+.big:active{transform:translateY(2px)}
+.checklist{display:grid;gap:6px;margin:0 0 16px;padding:0;list-style:none;font-family:var(--f-note)}
+.checklist li{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:var(--surface2);border:1px solid var(--soft);font-size:15px}
+.checklist li .s{flex:1;min-width:0}
+.checklist li .c{font-variant-numeric:tabular-nums;font-weight:700}
+.checklist li.ok{background:var(--ok-soft)} .checklist li.ok .c{color:var(--ok)}
+.checklist li button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 10px;font-size:13px;min-height:34px}
+.reset{margin-top:24px;font-size:14px;color:var(--muted);font-family:var(--f-note)}
+.reset button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;min-height:38px}
+
+/* ── 아래 이동 ── */
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--top-bg);border-top:var(--bw) solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.t-lesson .foot{background:var(--surface2)}
+.foot .wrap{display:flex;gap:10px;align-items:center;padding-block:10px}
+.foot .nav{border:var(--bw) solid var(--line);background:var(--surface);border-radius:14px;padding:10px 18px;min-height:52px;font-family:var(--f-display);font-size:17px}
+.foot .nav.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.t-escape .foot .nav.next{color:#1B1405}
+.foot .nav:disabled{opacity:.35}
+.foot .mid{flex:1;text-align:center;font-size:14px;color:var(--muted);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--f-note)}
+
+/* ── 아래 시트 ── */
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);color:var(--ink);border-top:var(--bw) solid var(--line);border-radius:20px 20px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.25);padding:16px max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(110%);transition:transform .25s}
+.sheet.open{transform:none}
+.sheet:not(.open){visibility:hidden;transition:transform .25s,visibility 0s .25s}
+.sheet .in{max-width:900px;margin:0 auto}
+.sheet .hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sheet .hd span{flex:1}
+.tiles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tile{width:58px;height:58px;border-radius:14px;border:2.5px solid #594638;background:#FFF4D6;color:#532F23;font-size:25px;box-shadow:0 3px 0 #594638;font-family:var(--f-body)}
+.tile[disabled]{opacity:.2;box-shadow:none}
+.sheet .preview{font-size:23px;color:var(--accent);min-height:34px;margin-bottom:10px;letter-spacing:.05em}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:#1E1712;color:#fff;padding:10px 18px;border-radius:999px;z-index:60;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center;font-family:var(--f-note);font-weight:700}
+.t-escape .toast{background:#E9B949;color:#1B1405}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ── 결과지 (항상 흰 종이) ── */
+.modal{position:fixed;inset:0;z-index:70;background:rgba(10,12,16,.75);display:flex;flex-direction:column}
+.modal .mh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));background:#1E1712;color:#fff;font-family:"Gothic A1",sans-serif}
+.modal .mh b{flex:1;min-width:0}
+.modal .mb{flex:1;overflow:auto;padding:20px 12px 40px;-webkit-overflow-scrolling:touch}
+.modal .mbtn{border:0;border-radius:10px;padding:10px 16px;font-weight:800;min-height:46px}
+.modal .mbtn.p{background:#FFD24A;color:#1E1712}
+.modal .mbtn.s{background:rgba(255,255,255,.15);color:#fff}
+#pages{display:flex;flex-direction:column;align-items:center;gap:16px}
+.rpage{width:720px;height:1018px;flex:none;background:#fff;color:#111;padding:40px 44px 36px;position:relative;overflow:hidden;font-family:"Gothic A1","Apple SD Gothic Neo",sans-serif;font-size:13px;line-height:1.55;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.rpage .pn{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:11px;color:#888}
+.rp-head{border-bottom:2px solid #532F23;padding-bottom:10px;margin-bottom:12px}
+.rp-head .k{font-size:11px;color:#555}
+.rp-head h1{font-family:"Jua",sans-serif;font-weight:400;font-size:26px;margin:2px 0 6px;color:#532F23}
+.rp-head .idrow{display:flex;gap:18px;font-size:14px;flex-wrap:wrap}
+.rp-head .idrow b{font-weight:800}
+.rp-sec{font-weight:800;font-size:15px;margin:14px 0 6px;padding:4px 10px;background:#FCE2DB;border-left:4px solid #D9455F;color:#532F23}
+.rp-u{margin:4px 0}
+.rp-u .def,.rp-u .sub{line-height:1.8;margin:3px 0;font-size:13px;font-family:"Gothic A1",sans-serif}
+.rp-u .note{display:none}
+.rv{font-weight:800;color:#C2263A;border-bottom:1.5px solid #C2263A;padding:0 4px}
+.rv.empty{color:#bbb;border-bottom-color:#bbb}
+.rp-row{display:grid;grid-template-columns:1fr 92px 1.2fr;gap:8px;border-bottom:1px solid #E3E6EE;padding:5px 0;align-items:start}
+.rp-row.two{grid-template-columns:1fr 1fr}
+.rp-row.three{grid-template-columns:1.3fr 1fr 1fr}
+.rp-st{font-weight:800;font-size:16px}
+.rp-st.ok{color:#17905E} .rp-st.warn{color:#C27C00} .rp-st.no{color:#D23838}
+.rp-bin{margin:3px 0}
+.rp-bin b{display:inline-block;min-width:120px}
+.rp-chip{display:inline-block;border:1px solid #bbb;border-radius:6px;padding:0 6px;margin:2px 3px 2px 0}
+.rp-chip.cor{border-color:#E3262C;color:#E3262C}
+.rp-free{margin:4px 0 8px}
+.rp-free .q{font-weight:700}
+.rp-free .a{white-space:pre-wrap;border:1px solid #DDE1EA;border-radius:6px;padding:5px 8px;min-height:24px}
+.rp-ox{font-weight:800}
+.rp-ox.o{color:#17905E} .rp-ox.x{color:#E3262C}
+.rp-stats{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#444;margin-top:6px}
+.rp-legend{font-size:11px;color:#666;margin-top:4px}
+.rp-table{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0}
+.rp-table th,.rp-table td{border:1px solid #D9DDE7;padding:3px 6px;text-align:left}
+.rp-table th{background:#FCE2DB}
+.rp-w{color:#E3262C;font-size:11px}
+.rp-q{background:#FFF5DA;border-radius:6px;padding:4px 8px;margin:3px 0}
+.rp-ans{background:#E6F5EC;color:#0E5C3B;border-radius:6px;padding:4px 8px;margin:2px 0 8px;font-size:12px;line-height:1.5}
+.rp-ans b{color:#17905E}
+.rp-ans.lock{background:#F2F3F7;color:#888}
+.rp-ok{color:#17905E;font-weight:800;font-size:12px}
+.rp-blk{border-bottom:1px solid #E3E6EE}.rp-blk .rp-row{border-bottom:0}
+
+@media (max-width:560px){
+  body{font-size:16.5px}
+  .brand .txt,.hearts{display:none}
+  .blk{padding:16px}
+  .t-lesson .blk:not(.info):not(.tfig)::before,.t-lesson .blk-head{margin-left:-16px;margin-right:-16px;margin-top:-16px}
+  .jitems.cards{grid-template-columns:1fr}
+  .foot .nav{padding:10px 12px}
+  .t-lesson h1.st{padding:6px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{
+  body{background:#fff!important;padding:0}
+  body>*:not(#modal){display:none!important}
+  #modal{position:static;background:#fff;display:block!important}
+  #modal .mh{display:none}
+  #modal .mb{overflow:visible;padding:0}
+  #pages{display:block}
+  .rpage{box-shadow:none;page-break-after:always;break-after:page;margin:0 auto}
+  @page{size:A4;margin:0}
+}
+
+/* ── 1차시 중간안: 밤하늘 배경 + 밝은 창문 카드 (2차시와 한 시리즈) ── */
+body.t-lesson{
+  --page-ink:#F4EEFF; --page-muted:#C9BFE6;
+  background:
+    radial-gradient(2px 2px at 12% 18%,rgba(255,255,255,.85) 50%,transparent 51%),
+    radial-gradient(1.5px 1.5px at 72% 9%,rgba(255,255,255,.7) 50%,transparent 51%),
+    radial-gradient(2px 2px at 88% 42%,rgba(255,236,170,.9) 50%,transparent 51%),
+    radial-gradient(1.5px 1.5px at 35% 64%,rgba(255,255,255,.6) 50%,transparent 51%),
+    radial-gradient(2px 2px at 58% 83%,rgba(255,214,230,.85) 50%,transparent 51%),
+    radial-gradient(1200px 700px at 50% -250px,#4A3F86 0%,rgba(36,32,74,0) 70%),
+    #24204A;
+  background-size:420px 420px,380px 380px,460px 460px,520px 520px,400px 400px,auto,auto;
+  background-attachment:fixed;
+}
+.t-lesson .top{background:#17142F;color:#F4EEFF;border-bottom-color:#0E0C22}
+.t-lesson .brand .c{background:#FCE2DB;color:#532F23;border-color:#FCE2DB}
+.t-lesson .who{color:#C9BFE6}
+.t-lesson .hearts i{-webkit-text-stroke:1.5px #F4EEFF}
+.t-lesson .keybtn{background:transparent;color:#FCE2DB;border-color:#FCE2DB}
+.t-lesson .bar{background:#2E2958}
+.t-lesson .bar i{background:linear-gradient(90deg,#FF9DB8,#E9B949)}
+.t-lesson .rail{background:#1C1939;border-bottom-color:#0E0C22}
+.t-lesson .period-tag{color:#C9BFE6}
+.t-lesson .eyebrow{color:#FFD9E4}
+.t-lesson .lead{color:var(--page-ink)}
+.t-lesson .lead b{color:#FFB8CB}
+.t-lesson .blk{box-shadow:0 10px 0 rgba(10,8,30,.35)}
+.t-lesson .foot{background:#17142F;border-top-color:#0E0C22}
+.t-lesson .foot .mid{color:#C9BFE6}
+.t-lesson .foot .nav{border-color:#F4EEFF}
+.t-lesson .foot .nav.next{border-color:var(--accent)}
+.t-lesson .toast{background:#FCE2DB;color:#532F23}
+
+/* ── 1차시 밤하늘 테마: 카드·글자·버튼까지 전체 ── */
+body.t-lesson{
+  --surface:#2C2858; --surface2:#24204D; --bar:#C9E3F2; --bar-ink:#262150;
+  --ink:#F4EEFF; --line:#8C83D6; --soft:#3A3570; --muted:#BDB4E3;
+  --accent:#FF8FB1; --accent-soft:#4A2E55; --lav:#4A4590; --lav2:#B9A8F2; --pinkbar:#5B3B6E; --cream:#3A3466;
+  --field:#1D1A40; --field-line:#FF8FB1; --ans-ink:#FFC2D3;
+  --ok:#5FD4A0; --ok-soft:#1E3D3A; --warn:#FFC15C; --warn-soft:#46391F; --no:#FF7A8A; --no-soft:#4A2433;
+  --teacher:#C3A6FF; --teacher-soft:#3A2F66;
+  --card-bg:#FFF4F8; --card-ink:#262150; --card-line:#262150;
+  color-scheme:dark;
+}
+.t-lesson h1.st,.t-lesson .blk-head h2,.t-lesson .binhead,.t-lesson .tbl th{color:var(--bar-ink)}
+.t-lesson h1.st::before,.t-lesson h1.st::after{color:#E0567F}
+.t-lesson .blk-head::after{color:var(--bar-ink)}
+.t-lesson .binhead small{color:#5A5390}
+.t-lesson .blk{box-shadow:0 10px 0 rgba(8,6,26,.45)}
+.t-lesson .card{background:var(--card-bg);border-color:var(--card-line);color:var(--card-ink)}
+.t-lesson .card small{color:#5A5390}
+.t-lesson .blank input::placeholder{color:#8E82C4}
+.t-lesson .tilebtn{color:#FFC2D3}
+.t-lesson .stamp{background:#1D1A40;color:var(--ink)}
+.t-lesson .jitem{background:var(--surface2)}
+.t-lesson .info{background:#332E66}
+.t-lesson .info.warn{background:var(--warn-soft)}
+.t-lesson .info.accent{background:#3A2F66;border-color:var(--lav2)}
+.t-lesson .tbl{background:var(--surface2)}
+.t-lesson .tbl td{border-bottom-color:#3A3570}
+.t-lesson .axis>div,.t-lesson .step,.t-lesson .ccl{background:var(--surface2)}
+.t-lesson .ccl-ic{color:#F4EEFF}
+.t-lesson .idcard{background:var(--bar);color:var(--bar-ink)}
+.t-lesson .idcard .seal{border-color:#E0567F;color:#E0567F}
+.t-lesson .reg .inp{background:var(--field);color:var(--ink)}
+.t-lesson .qbtn,.t-lesson .mini,.t-lesson .reset button,.t-lesson .checklist li button{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.t-lesson .keybtn{color:#FFC2D3;border-color:#FFC2D3}
+.t-lesson .chip{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.t-lesson .chip .n{background:#3A3570;color:var(--ink)}
+.t-lesson .chip.cur{background:#5B3B6E;border-color:var(--accent)}
+.t-lesson .chip.cur .n{background:var(--accent);color:#262150}
+.t-lesson .foot .nav{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.t-lesson .foot .nav.next{background:var(--accent);color:#262150;border-color:var(--accent)}
+.t-lesson .big{color:#262150}
+.t-lesson .tfig{background:var(--surface)}
+.t-lesson .tfig figcaption{color:var(--muted)}
+.t-lesson .ansbox{color:var(--ink)}
+.t-lesson .sheet{background:#2C2858;color:#F4EEFF;border-top-color:#8C83D6}
+.t-lesson .sheet .preview{color:#FFC2D3}
+.t-lesson .hchip{background:#2C2858;color:#F4EEFF}
+.t-lesson .def b,.t-lesson .sub b{color:#FFB8CB}
+.t-lesson .field textarea{background:var(--field);color:var(--ink);border-color:var(--line)}
+.t-lesson .pool{background:#1D1A40;border-color:#5C55A6}
+.t-lesson .bin{background:var(--surface2)}
+.t-lesson .prev .pv{background:#1D1A40}
+
+</style>
+</head>
+<body class="t-lesson">
+<header class="top">
+  <div class="teacher-flag keys-flag" id="tflag" hidden></div>
+  <div class="wrap">
+    <div class="brand"><span class="c">©</span><span class="txt" id="brandTxt">저작권 보호</span></div><span class="hearts" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+    <div class="who" id="who">수사관 미등록</div>
+    <div class="sp"></div>
+    <span class="hchip" id="coupon" hidden></span>
+    <span class="hchip" id="timer" hidden></span>
+    <button class="tbtn" id="revealAll" aria-pressed="false" hidden>정답 모두 보기</button>
+    <button class="keybtn" id="keyBtn" type="button">열쇠</button>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+</header>
+<nav class="rail" aria-label="활동 목록"><div class="wrap" id="rail"></div></nav>
+<main class="wrap" id="main"></main>
+<footer class="foot"><div class="wrap">
+  <button class="nav" id="prev">◀ 이전</button>
+  <div class="mid" id="mid"></div>
+  <button class="nav next" id="next">다음 ▶</button>
+</div></footer>
+
+<div class="sheet" id="sheet" role="dialog" aria-label="글자 조각"><div class="in">
+  <div class="hd"><span id="tTitle">글자 조각을 순서대로 눌러 보세요</span><button class="mini" id="tClear">지우기</button><button class="mini" id="tClose">닫기</button></div>
+  <div class="preview" id="tPrev"></div>
+  <div class="tiles" id="tiles"></div>
+</div></div>
+<div class="sheet" id="ksheet" role="dialog" aria-label="교사 열쇠"><div class="in">
+  <div class="hd"><span>선생님이 불러 준 열쇠 번호를 넣어요</span><button class="mini" id="kClose">닫기</button></div>
+  <div class="keyrow"><input class="keyin" id="kIn" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="····"><button class="big" type="button" id="kGo">열기</button></div>
+  <p class="keymsg" id="kMsg"></p>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="modal" hidden>
+  <div class="mh"><b>탈출 보고서 미리보기</b>
+    <button class="mbtn p" id="dl">PDF 저장</button>
+    <button class="mbtn s" id="pr">인쇄로 저장</button>
+    <button class="mbtn s" id="mclose">닫기</button>
+  </div>
+  <div class="mb"><div id="pages"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const D = {"teacher": false, "part": 2, "sections": [{"key": "start", "kind": "start", "period": 2, "title": "수사관 등록", "short": "등록", "lead": "2차시 출동! 무단 복제 괴물 <b>카피몬</b>이 학교 방송실을 점거했어요. 1차시 수사관 교육에서 배운 내용으로 방 8개의 자물쇠를 풀고 카피몬을 막아 주세요. 먼저 학번과 이름을 확인해요!", "blocks": [{"t": "register"}]}, {"key": "gate", "kind": "gate", "period": 2, "title": "출동 게이트", "short": "출동", "lead": "2차시 시작! 선생님이 불러 주는 <b>출동 열쇠</b>를 넣으면 방탈출이 시작되고 40분 타이머가 돌아가요. 방은 순서대로 열리고, 자물쇠를 풀면 다음 방 문과 <b>글자 조각</b> 하나를 얻어요.", "blocks": [{"t": "gate"}]}, {"key": "r0", "kind": "room", "period": 2, "title": "증거 분류실", "short": "증거 분류", "lead": "카피몬이 증거물을 뒤섞어 놓았어요! 저작물인 것과 아닌 것, 저작권 권리 카드를 알맞은 상자로 옮겨요.", "blocks": [{"t": "sort", "id": "isWork", "title": "저작물일까, 아닐까?", "lead": "카드를 끌어서 옮기거나, 카드를 누른 뒤 상자를 눌러 넣어요.", "bins": [{"name": "저작물이다"}, {"name": "저작물이 아니다"}], "items": [{"label": "머릿속으로만 생각한 소설 줄거리", "id": "c1", "rec": "WzIzOSwgMTc0LCA5NCwgMTY1LCAyMSwgMjQ3LCAxOTEsIDUxMzUzLCA1MTE5OSwgNDgwNzMsIDUxMTQyLCAxMTUsIDUwNDkxLCA0NTcxNCwgNDU2MTUsIDE1OSwgMjE0XQ=="}, {"label": "'사과'라는 단어 하나", "id": "c6", "rec": "WzEwLCAxNDUsIDEyLCA1MCwgNDQsIDE3OCwgMjQzLCA1MTM2MiwgNTExNDksIDQ3OTU3LCA1MTE3MiwgNjYsIDUwNDk5LCA0NTY2NCwgNDU4MjMsIDE1MiwgMTQyXQ=="}, {"label": "내가 만든 엔트리 게임 코드", "id": "c4", "rec": "WzE2OCwgMjUsIDExNSwgMTIxLCA0NCwgMTg4LCA3NiwgNTE0MTYsIDUxMTc0LCA0ODA0OSwgNTA5NjAsIDQ1NjQ3LCAxMDMsIDIxN10="}, {"label": "내 마음을 담아 친구에게 쓴 손편지", "id": "c5", "rec": "WzMyLCA2MSwgMTE0LCAyMzEsIDEwMiwgMzEsIDEwOSwgNTEzNzgsIDUxMTQ3LCA0Nzk2NSwgNTExODMsIDQ1NzgyLCAxNjMsIDIwN10="}, {"label": "내가 직접 그린 웹툰 한 컷", "id": "c2", "rec": "WzEyNiwgMTAsIDEyNiwgMjA4LCAxNTcsIDE2MywgMjEsIDUxMzQyLCA1MTA3MSwgNDgwNjksIDUwOTUzLCA0NTYzMSwgMTAwLCAxNDdd"}, {"label": "'오늘 최고 기온은 25℃'라는 사실", "id": "c3", "rec": "Wzc5LCAyMjQsIDQ5LCAxNywgMzUsIDU1LCAxOSwgNTEzOTAsIDUxMTk4LCA0Nzk0NCwgNTExNDAsIDExNywgNTA0OTgsIDQ1NzgwLCA0NTY2MSwgNDcsIDMyXQ=="}]}, {"t": "sort", "id": "rights", "title": "권리 분류", "lead": "권리 이름만 보고 어느 쪽인지 떠올려 보세요.", "bins": [{"name": "저작인격권", "desc": "명예·인격"}, {"name": "저작재산권", "desc": "경제적 이익"}], "items": [{"label": "성명표시권", "id": "c8", "rec": "WzE0LCAxNzAsIDExNiwgMjQxLCAxNTAsIDE0MiwgMTcwLCA1MTMwNywgNTEwOTcsIDUxMDY5LCA0NDIwNywgNDQzNTUsIDc1LCA5NF0="}, {"label": "복제권", "id": "c2", "rec": "WzExLCA4MSwgMjE3LCAyMzEsIDI1MSwgMjAyLCA4MiwgNTEzMzEsIDUxMTAwLCA1MTA5MywgNDkyNTMsIDQ0NDQzLCA2MiwgMTFd"}, {"label": "배포권", "id": "c3", "rec": "WzE3MCwgNzQsIDMyLCAxNjcsIDUsIDg2LCAyNDksIDUxMzg0LCA1MTA4NSwgNTExMDYsIDQ5MjU5LCA0NDQxOCwgOTAsIDIzM10="}, {"label": "2차적저작물작성권", "id": "c9", "rec": "WzE5LCAyMTIsIDIxMSwgMTMwLCA1OSwgNjMsIDkyLCA1MTMzMywgNTEwNDQsIDUxMDM4LCA0OTMyMCwgNDQzMjYsIDIwNiwgNzBd"}, {"label": "공표권", "id": "c1", "rec": "WzE2NiwgNDYsIDgzLCAxNjIsIDE4NSwgMjMzLCAxMiwgNTE0MzYsIDUxMDM1LCA1MTEwOSwgNDQwOTAsIDQ0Mzc2LCAxNDQsIDE4NF0="}, {"label": "공중송신권", "id": "c6", "rec": "WzEsIDIxMSwgMTMwLCAyNDUsIDE0MywgMjA3LCAyMjEsIDUxMzE5LCA1MTEzMSwgNTEwNzAsIDQ5MzcwLCA0NDQ1NywgMjQwLCAyMjBd"}, {"label": "동일성유지권", "id": "c4", "rec": "WzIyMywgMjMzLCAxNjMsIDEwNywgODMsIDM3LCAxODksIDUxNDQ2LCA1MDk4MywgNTEwMTYsIDQ0MTQzLCA0NDQzNiwgMywgMjM3XQ=="}, {"label": "대여권", "id": "c10", "rec": "WzI0NCwgMSwgMjE2LCAxMjYsIDEyNywgMjI0LCA5LCA1MTI0NSwgNTExNjksIDUwOTY3LCA0OTI1MCwgNDQzNTMsIDcsIDIyOV0="}, {"label": "전시권", "id": "c5", "rec": "WzkyLCAxMDAsIDIyLCAxOTgsIDIzMSwgMTI4LCAyMzQsIDUxMzM5LCA1MDk4MywgNTExMTQsIDQ5MzQ2LCA0NDQ3MSwgMjQ0LCAyNDdd"}, {"label": "공연권", "id": "c7", "rec": "WzI4LCAyMTgsIDYxLCA2LCA5NSwgMzEsIDQsIDUxMzI2LCA1MTAxOCwgNTEwNzAsIDQ5Mzg2LCA0NDI5MiwgMjYsIDE4NF0="}]}], "lock": "분류 자물쇠", "letter": "해"}, {"key": "r1", "kind": "room", "period": 2, "title": "사건 판정실", "short": "판정실", "lead": "방송실 복도에 사건 파일 8개가 흩어져 있어요. 1차시에 배운 판정 기준으로 도장을 찍고, 이유나 <b>더 안전한 행동</b>을 적어야 자물쇠를 돌릴 수 있어요.", "blocks": [{"t": "info", "tone": "accent", "html": "<p><b>판정 기준</b></p><div class='legend'><span class='lg ok'>○</span> 대체로 가능 <span class='lg warn'>△</span> 조건 확인 필요 <span class='lg no'>×</span> 위험하거나 침해 가능성이 큼</div><p style='margin-top:.6em'>판정의 핵심: “무료인가?”보다 “이용 조건을 확인했는가?”, “허락받은 범위 안인가?”, “출처를 표시했는가?”를 먼저 본다.</p>"}, {"t": "judge", "id": "cases", "opts": ["○", "△", "×"], "reason": "이유 또는 더 안전한 행동", "need": true, "cards": true, "items": [{"id": "i1", "q": "검색한 사진의 이용 조건을 확인하지 않고, 출처도 쓰지 않은 채 발표 자료에 넣었다.", "rec": "WzIyMCwgMTIzLCAxODgsIDE5MywgMjMsIDE1NiwgMjQwLCA5NTI5LCAxMTgsIDQ2NTk0LCA0NTY2MiwgMTE4LCA1NywgMjIxLCAxMjQsIDE1OCwgMTk2LCAxNDcsIDg3LCAxOTcsIDEwOCwgMTI5LCAxODYsIDIwLCA1MDk4MCwgNTA5MTUsIDE3MCwgNTEyNDQsIDQ0MjY4LCA0NDE0MywgMjQ5LCA1MjYyNSwgNTIyODcsIDQ3Mzg5LCAyMjgsIDU0OTgwLCA1MTE4MiwgNTQ2MzAsIDUwNDg3LCAyMzksIDU0NzE1LCA0NTc1MCwgMTksIDIyMSwgNTI1MDksIDUyMzc2LCA5MSwgNTA1MTYsIDUxMDU4LCAxMDksIDQ5MjY3LCA1MDkzOSwgNTQ1NDIsIDQ3NjE3LCA3NywgNTExNzMsIDU0NjQ2LCA1NDU1MiwgNDU2ODUsIDQxLCAxODAsIDI0NV0="}, {"id": "i2", "q": "유튜브 영상을 다운로드해서 친구들에게 파일로 보냈다.", "rec": "WzczLCAxMDYsIDQ4LCAxOCwgMTc4LCAxMzMsIDI1MCwgMTE5LCA5NSwgMTk0LCA3NywgMTA4LCAxMDEsIDI1LCA5LCAzNCwgNTMsIDIxMiwgMjExLCA1NDEwMCwgNTExODYsIDQ3MTY4LCAyNSwgNDgzNzUsIDQ1MjE2LCA0NTgyMCwgMTk4LCA0NDE4MywgNTA5NTMsIDkwLCA0ODM0NCwgNTEyMzUsIDI1MywgNDgxNjMsIDU0MDM0LCA0NDA4MiwgMTgsIDQ2MjkyLCAxOTAsIDQ5NjY5LCAyMTksIDUxMTEwLCA1MDU4NSwgMjQ3LCA1MDk3OCwgNTQ3MTQsIDU0Nzc2LCA0NTYwMCwgOTIsIDE4NiwgNDQyNDAsIDQ5NzAwLCAxOTksIDQ3NDIyLCA1MzI2MCwgNDc1MjcsIDY5LCA0ODE5OCwgNDUwNjUsIDQ1NTg0LCA3OSwgNDQyNDMsIDUxMTQwLCAxODIsIDQ1ODczLCA4NCwgNTA2ODAsIDUxMzczLCA1NDYyMiwgNDU3ODksIDM0LCAxNjksIDE2MV0="}, {"id": "i3", "q": "인터넷 글을 그대로 복사해 과제로 제출했다.", "rec": "WzE3MSwgMTMzLCAyNTMsIDExMiwgMjM4LCA2OSwgMTI3LCAyMzYsIDE0MCwgODIsIDE5NywgNDAsIDIwOSwgMTM3LCAyMywgMTY0LCAyNDUsIDExOCwgODQsIDQ0MzcxLCA0NTk1MywgNDcyMzUsIDE2OCwgNDgyOTUsIDQ5MzUyLCA1NDUzNiwgMTMsIDUxMzg1LCA1MjYwOCwgNTQ1NDQsIDQ3Nzg5LCA3NywgNTEzMDAsIDUwOTc2LCA0NDUzMywgNiwgNDgxMjYsIDUxMzQ1LCA1MDc0MCwgNzcsIDQ0MTk3LCA1MTMzNCwgMTE0LCA1MTE1MSwgNDc0NTgsIDU4LCA0ODAyOSwgNTEzNDEsIDQ0MjI4LCAxNzUsIDQ5Mjc0LCA0NDc0NiwgMjU1LCA0OTcxOSwgNTIsIDUwOTc0LCA0NTY0NiwgOSwgMjIwLCAxMjNd"}, {"id": "i4", "q": "공식 유튜브 링크를 친구에게 보냈다.", "rec": "WzI1NCwgMTAxLCA1NSwgMTQwLCA2MSwgMTI1LCAxMjUsIDk0OTAsIDg5LCA0NjgwOCwgNDU4MjAsIDU5LCA5NzAzLCAyMjMsIDE1MywgNTAsIDE1MCwgMjMwLCA2NSwgMTcyLCA3OCwgMTEzLCA2MywgMSwgNDQxODMsIDQ5Nzk1LCAyMCwgNDc0MDcsIDUzMzc0LCAyNiwgNDQxMTUsIDUxMTQ5LCA0NTY2NCwgMTU2LCA0OTMzOSwgNDU5NDMsIDUxMjI5LCA1MTEzNCwgNDcxODAsIDEyOSwgNTA1MTcsIDUxMzIxLCA1NDc0NywgNTE2NDgsIDQ3NDM1LCA4OSwgNDkyNzksIDUxMDI2LCA1Mzk5MiwgMTcyLCA1MDQ5NiwgNDQ0NDMsIDQ0MjIzLCA2MywgNDkzNzYsIDU0OTcxLCA1MTExMSwgOTIsIDU0OTAyLCA1MTAxMSwgNTQ3MjEsIDQ1NjU2LCAxODMsIDE3NiwgMjEwXQ=="}, {"id": "i5", "q": "문제집 해설 사진을 찍어 단체방에 공유했다.", "rec": "WzE1MSwgMTAxLCAxNDksIDI0NiwgNTUsIDExNSwgMTAyLCAxNDQsIDEzNywgNSwgOTAsIDcsIDExOSwgMTgzLCAyMzYsIDIxNywgNzUsIDI5LCA4MywgNDgwODgsIDUxMjU0LCA1MTU3NiwgNDU5MjgsIDEwNSwgNTE0NDQsIDUxMDM2LCA0ODA1OSwgNTA5NzIsIDQ0MjI3LCA0LCA3NiwgNDkxODMsIDUxNTQ1LCA1MDk4NCwgMTczLCA1MjQ1OSwgNTA0NTQsIDI3LCA0NDIzNSwgNTExNTcsIDU0NjU2LCA0Nzc1NiwgOTMsIDQ4MTg0LCA1MTMxMiwgMTQwLCA1MTQyMCwgNDk1MjUsIDUwOTU2LCAxNTEsIDQ2MzA0LCAxMDEsIDQ5ODE3LCAxOTEsIDUxMTAzLCA0NTY1NSwgMjAwLCAxNDcsIDE3MV0="}, {"id": "i6", "q": "무료 음악 사이트에서 음악을 받았는데, 이용 조건을 확인하지 않고 영상 배경음악으로 넣었다.", "rec": "Wzg5LCAyNiwgMTgsIDEyOSwgMTUyLCAxMjMsIDIwMiwgOTUxMiwgNTYsIDQ2ODA3LCA0NTc2MCwgMjA1LCAxMDAsIDE3NCwgODIsIDE2MywgNDMsIDE5MiwgMTYsIDE1MSwgODUsIDE0NywgMjMxLCAxMTAsIDQ4MTA2LCA0NzEyMiwgODMsIDUxMDUxLCA1MDY2NywgNDU4ODUsIDIsIDUwNzI1LCA0OTM2MiwgMTAsIDQ5MjA4LCA1MDgzMiwgNTMsIDQ0MTQxLCA0NTU5OCwgOTIsIDUwNjQ5LCA0ODM5NywgNTA3MDAsIDE4MSwgNTI2NTksIDUyNDc3LCA0OSwgNTQzNjYsIDQ5NzcyLCAyMDgsIDUxMjI0LCA0NDEyMCwgNTA5NTIsIDEyNCwgNTQ4MjIsIDUxMDkwLCA1NDU4OCwgNTA1NjcsIDIyMiwgNTQ2MDEsIDQ1NjEyLCA0OCwgMTY2LCAyNDFd"}, {"id": "i7", "q": "남의 캐릭터 그림의 색만 바꾸어 SNS 공개 프로필 사진으로 사용했다.", "rec": "WzEwOCwgMTMsIDQ1LCA2LCA1NCwgMjUwLCAyMTksIDIwNiwgNTMsIDI0NCwgMTExLCAxNiwgMSwgMTUxLCAyLCAxNjgsIDIxOSwgOTUsIDksIDQ5MzU4LCA0NzQ1MCwgMjAxLCA0ODE5MSwgNDQ4NTUsIDQ2MDY2LCAxNzYsIDUwNzQxLCA1MTExMiwgNTEwOTMsIDk3LCA0ODI4OSwgNTMzMjksIDUxMTcwLCA0NzE4NywgNjksIDU0NTY0LCAxNzUsIDUxMTc2LCA1MDgyMCwgNTEwNjEsIDQ4MDkxLCA0NzEzOCwgOTgsIDQsIDUyMzAxLCA1MTM0OSwgMjEwLCA1MTQwMCwgNTExMjUsIDQ3OTIwLCAzNCwgNDc5ODEsIDUxMjg0LCA0NDE5OCwgMSwgNDkyMDcsIDQ0NzYwLCAxMywgNDk3NDcsIDE4NSwgNTA5OTIsIDQ1NjE5LCAxMjQsIDE1MSwgMjAyXQ=="}, {"id": "i8", "q": "AI로 이미지를 만들고 수행평가에 사용하면서 사용 사실을 표시했다.", "rec": "WzM1LCA4MCwgMjUzLCAxNSwgMTA2LCAxMzIsIDE5MCwgOTU0MiwgNzEsIDIyOSwgMTEwLCAxOTAsIDgxLCAyNTQsIDIyNSwgMTgsIDY3LCAxOCwgMjQwLCA0OTE5MSwgNTA3MjIsIDExNCwgNDk0MDMsIDQ5ODI4LCAxODgsIDU0MzIwLCA0OTc2MSwgNDU2MzAsIDIwOCwgNTEzOTEsIDUxNDU3LCA0NzU2MSwgMzcsIDI0MSwgNTExNjgsIDUwOTA0LCAyNDcsIDUxNDEwLCA0NDE4NiwgNDQyNDAsIDExNywgNDQ2ODIsIDUxMzIxLCAxNDAsIDUxMDc0LCA1NDQ5NywgNDQwNDYsIDUxMTcxLCA4LCA1MTE4NCwgNDkyNzAsIDQ5NDExLCA0LCAxODUsIDQ0MjcwLCA1MTIxNywgMCwgNDQ3OTEsIDUxNjkzLCA1MTE3MSwgNjAsIDU0ODk1LCA1MTEzNiwgNTQ3ODAsIDUwNTY5LCAxMDksIDU0NjQ0LCA0NTcyNSwgMjE4LCAyMDcsIDE3MV0="}]}], "lock": "판정 자물쇠", "letter": "꼭"}, {"key": "r2", "kind": "room", "period": 2, "title": "공유 작전실", "short": "공유 작전", "lead": "친구들이 방송실 자료를 이리저리 퍼뜨리고 있어요! 공유 방식을 분류하고, 올바른 이용 5단계를 순서대로 맞춰요.", "blocks": [{"t": "sort", "id": "sharing", "title": "공유 방식 분류", "lead": "예시 카드를 알맞은 공유 방식 상자로 옮겨요.", "bins": [{"name": "공식 링크 공유"}, {"name": "파일 직접 공유"}, {"name": "캡처 공유"}], "items": [{"label": "유료 강의 화면 캡처", "id": "c8", "rec": "WzIzOSwgMTE3LCA0NiwgMTM2LCAxMTUsIDIzMiwgMTE0LCA1MjgzMywgNTIzNDMsIDE1OCwgNDQyMzEsIDUxMTIzLCAxOSwgMjQwXQ=="}, {"label": "문제집 스캔본 공유", "id": "c7", "rec": "WzE5OSwgMzIsIDk2LCAyMzEsIDk3LCAxMzIsIDI5LCA1NDIxOSwgNTExOTcsIDE0MywgNTE1MTQsIDUxMzg0LCAyMjYsIDQ0MjU1LCA1MTE3MCwgMTM4LCAxODdd"}, {"label": "웹툰 장면 캡처", "id": "c5", "rec": "WzEwMiwgODYsIDU1LCAxMzEsIDE4OCwgMjM5LCAxNTUsIDUyOTMzLCA1MjI3MiwgODAsIDQ0MTU3LCA1MTA3MywgMTY1LCA3MV0="}, {"label": "공식 기사 링크", "id": "c3", "rec": "WzE0NywgMTUzLCAyNDQsIDEwNCwgODcsIDE2MSwgMjQ5LCA0NDExNiwgNDk3OTgsIDkxLCA0NzUyOSwgNTMzNTEsIDExMywgNDQyMjMsIDUxMTMzLCAxNzEsIDI0OF0="}, {"label": "영상 파일 저장 후 전송", "id": "c2", "rec": "WzE0MSwgMzQsIDQzLCAxNjEsIDI0NywgMTI1LCAyMTMsIDU0MDYwLCA1MTE2MywgMjExLCA1MTY1MiwgNTEzMzMsIDE4OSwgNDQwNTcsIDUxMDcxLCAyNywgMjIxXQ=="}, {"label": "드라마 장면 캡처", "id": "c9", "rec": "WzI0NCwgOTUsIDE3MCwgMTg5LCA0MywgMTE4LCAyNTIsIDUyODk4LCA1MjIzMSwgMjQwLCA0NDEyNCwgNTExNzQsIDYsIDgwXQ=="}, {"label": "기사 전문 복사해 붙여 넣기", "id": "c4", "rec": "WzEwMCwgMTM0LCAxNjgsIDIxNCwgMTUxLCAyNSwgNzksIDU0MjY0LCA1MTA4NywgMTc1LCA1MTYzOSwgNTEzMDYsIDE1NywgNDQyNjQsIDUwOTQ5LCAxNTksIDE2Ml0="}, {"label": "공공기관 자료 페이지 링크", "id": "c6", "rec": "WzMsIDE5OSwgMjE5LCAxNjIsIDE3OCwgMTcyLCA1LCA0NDE1MSwgNDk4OTgsIDIwMiwgNDc1MzUsIDUzNDk1LCAxNTcsIDQ0MTUwLCA1MTA4NCwgOTgsIDEzMV0="}, {"label": "공식 유튜브 링크", "id": "c1", "rec": "Wzc4LCA5NSwgNjksIDE3MiwgMTAsIDIzNCwgNjksIDQ0MTUyLCA0OTgwNywgMjM4LCA0NzQyMSwgNTMzMzIsIDc1LCA0NDI4NCwgNTExNTAsIDE3NSwgMTg5XQ=="}]}, {"t": "order", "id": "steps", "title": "5단계 순서 맞추기", "lead": "▲▼ 버튼으로 카드를 1단계부터 5단계 순서로 옮겨요.", "items": [{"id": "st399", "html": "무엇을, 어디에, 어떤 목적으로 쓸지 정한다.", "note": ""}, {"id": "st459", "html": "허락받은 범위 안에서 이용하고 출처를 표시한다.", "note": ""}, {"id": "st950", "html": "허락 없이 쓸 수 있는 범위·조건인지 확인한다.", "note": ""}, {"id": "st372", "html": "필요하면 저작권자에게 허락을 요청한다.", "note": ""}, {"id": "st709", "html": "보호받는 저작물인지 확인한다. 잘 모르겠으면 보호받는다고 생각한다.", "note": ""}], "rec": "WzIyLCAyMTMsIDE0NiwgNzgsIDI0OSwgMTk4LCAxNTIsIDEwOSwgNDgwODQsIDUwNTI2LCA1MTE5OCwgMjEyLCAyMzYsIDUwNTk1LCA0NjUyMywgNTA2MTYsIDE5MSwgMTg3LCA1MDY3NSwgNDYzMzYsIDIxLCA0Nzc5MywgNTE0MzUsIDUxMDQyLCA0NzMwNywgMTQ0LCA1MDE5MSwgNTE0NzksIDEzMywgNTEzMDAsIDU0NjgyLCA0NTc4OCwgNCwgMjI5LCA0NywgOTIsIDI0NywgNDgyNDYsIDU0OTE5LCA0ODI3MSwgNDU2MTMsIDExNSwgNTE0MjIsIDUxMDE1LCA0ODA2NywgNTA5NDUsIDUxNjg1LCAyMzgsIDU0ODAzLCA1MTAwMiwgNTQ1ODIsIDQ1NzkzLCAyMDgsIDE2LCA1MTAwMCwgMTQ2LCA0Nzc0MiwgNDc0MDUsIDQ0MTk5LCA1MTE2NCwgNDc3MDEsIDEzOCwgNDgyMjIsIDU0ODA2LCA0ODMxNCwgNDU3NjgsIDQ1NjMwLCA0NDEzMiwgNiwgNDkyODcsIDQ0MTk1LCA1NDY0MywgNDU2MTIsIDExOCwgMSwgMjU1LCAyMjEsIDE0MSwgNTQ3MDcsIDQ3MDQwLCAxNzMsIDUwNTY4LCA1MDk0NiwgMTcyLCA1MDI4MywgNjIsIDQ5NzI4LCAxNDIsIDUwOTc2LCA0NTY1NCwgMjEyLCA0ODEzNywgNTA5OTUsIDYyLCA1MTQwMiwgNDQyODYsIDUwOTU2LCA1MTYwNiwgMjQ2LCA1NDgxMCwgNTEwNDAsIDU0Njg1LCA0NTczMCwgMjI4LCAyMTksIDIzMCwgNjcsIDIyMCwgNTQ3NDMsIDUwODE1LCA1NDY3NSwgNDc3NDQsIDIzOSwgNTEyNzAsIDUwOTU3LCA0NDI5OSwgNTExMjQsIDUwNDczLCA0NDA1NywgMTA2LCA1NDYxMywgNDcwMDcsIDUxMDQzLCAyMjMsIDUwOTQzLCA1MjI5MSwgNTQ2NDMsIDQ1Njc3LCAyMiwgMTAwLCAxMTgsIDE4NSwgMTgyLCA1NDYwNSwgNDY4NTcsIDQ4Mjk4LCA1MTAyMywgOTgsIDQ4MzI3LCA1MTA3NywgMTEzLCA1MDQ2MSwgNTA0NzAsIDQ5NDI2LCAxMSwgNTEwMTIsIDUwODYyLCA1NDYyNywgNDQwNjUsIDExMCwgNTI3MjQsIDUyNDYzLCA0NzQwNiwgMTQyLCA1NDI4MSwgNDk4MTcsIDU0Nzc0LCA0NTYzOCwgNzEsIDE4NywgMTA2LCAxOTld"}], "lock": "순서 자물쇠", "letter": "조"}, {"key": "r3", "kind": "room", "period": 2, "title": "출처 기록실", "short": "출처·CCL", "lead": "카피몬이 출처를 다 지워 버렸어요! 출처 문장을 다시 조립하고, CCL 기호를 읽어 판정해요.", "blocks": [{"t": "cite", "id": "cite", "title": "출처 조립하기", "lead": "발표 자료에 아래 사진을 넣으려고 해요. 필요한 조각만 골라 순서대로 눌러 출처 문장을 완성해요. 필요 없는 조각도 섞여 있어요!", "tokens": [{"id": "t80", "label": "https://gongu.copyright.or.kr/…"}, {"id": "t66", "label": "좋아요 238개"}, {"id": "t38", "label": "@DATE@ 접속"}, {"id": "t85", "label": "사진: 김하늘"}, {"id": "t55", "label": "「노을 지는 운동장」"}, {"id": "t96", "label": "파일 크기 3.2MB"}, {"id": "t49", "label": "공유마당"}, {"id": "t76", "label": "내 이름"}], "rec": "WzgzLCA2NiwgNjQsIDE0OCwgMjQyLCAxNjQsIDI2LCAxNzYsIDQ5MzgyLCA1MTU2NiwgMTc1LCAzMywgNDQ1NTcsIDU0NjM2LCA0NTY2NSwgMjEsIDMsIDE4MywgMjI3LCAxMjQ0NCwgNDUzNTAsIDUxMDA5LCAxMDYsIDUxNTcxLCA0NTc5NiwgMjQyLCA1MDgyNiwgNDYwMDMsIDUwOTYwLCAxMjQ0NiwgMTgzLCAyMTMsIDI0MywgNywgNDQxOTUsIDUxMDEzLCA0NzM4NiwgNDU1OTYsIDE1MCwgMTczLCA3MCwgMTg2LCAxNzQsIDg0LCAxOTcsIDIwMSwgMTczLCAzOCwgNDAsIDUsIDE1OCwgMTcsIDE2NywgOCwgMTAsIDQ2LCAyNDMsIDIwLCAxNDAsIDk3LCAxMjksIDQzLCA1OCwgNTUsIDksIDQ1LCAyNDgsIDksIDE4OCwgMzYsIDEzNiwgNTAsIDgyMTcsIDE5MywgMTI0LCA1NSwgMjMyLCA2MSwgMTYyLCA2NiwgMTE3LCAxMDcsIDQzLCAxMjAsIDUxMjE3LCA0OTYwOCwgMjA1LCAyNDQsIDIyNV0="}, {"t": "judge", "id": "license", "title": "CCL 판정소", "opts": ["가능", "불가"], "reason": "어떤 조건 때문인지 (선택)", "cards": true, "items": [{"id": "i1", "q": "CC BY-NC 사진을 출처를 밝히고 학교 발표 자료에 사용한다.", "icon": "<span class=\"lic\"><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M247.6 8C387.4 8 496 115.9 496 256c0 147.2-118.5 248-248.4 248C113.1 504 0 393.2 0 256 0 123.1 104.7 8 247.6 8zM55.8 189.1c-7.4 20.4-11.1 42.7-11.1 66.9 0 110.9 92.1 202.4 203.7 202.4 122.4 0 177.2-101.8 178.5-104.1l-93.4-41.6c-7.7 37.1-41.2 53-68.2 55.4v38.1h-28.8V368c-27.5-.3-52.6-10.2-75.3-29.7l34.1-34.5c31.7 29.4 86.4 31.8 86.4-2.2 0-6.2-2.2-11.2-6.6-15.1-14.2-6-1.8-.1-219.3-97.4zM248.4 52.3c-38.4 0-112.4 8.7-170.5 93l94.8 42.5c10-31.3 40.4-42.9 63.8-44.3v-38.1h28.8v38.1c22.7 1.2 43.4 8.9 62 23L295 199.7c-42.7-29.9-83.5-8-70 11.1 53.4 24.1 43.8 19.8 93 41.6l127.1 56.7c4.1-17.4 6.2-35.1 6.2-53.1 0-57-19.8-105-59.3-143.9-39.3-39.9-87.2-59.8-143.6-59.8z\"/></svg></span>", "rec": "Wzc1LCAyNTIsIDEyOSwgODQsIDEwNiwgNzQsIDAsIDQ0MDU5LCA0NTc4NiwgMjEyLCA2OCwgMTE4LCA3MSwgMjE2LCAxNzAsIDM4LCAxMDAsIDIzMCwgMjA4LCAyNDAsIDEyMSwgMjksIDE2MiwgNTEyNDYsIDUxMDgwLCA1MDk0NCwgMTI0LCA1NDQyMywgNDk3NTAsIDYxLCA0NzU1MywgMTUxLCA1MTYzNSwgNTMwMTAsIDQ0MTU1LCAyNCwgMTg1LCA1NDc0MSwgNDQ0NjUsIDEyMSwgNDgzMzQsIDU0NDg2LCA0NTU4NiwgNzgsIDUwODQyLCA0NzU2NCwgMTcxLCA0Nzc3OSwgNTEyMDgsIDUxMDA3LCAxOCwgNTA0NDcsIDQ1ODE5LCA0NTYzMiwgMTg0LCA5NCwgMTUzXQ=="}, {"id": "i2", "q": "CC BY-NC 음악을 수익이 나는 유튜브 영상 배경음악으로 쓴다.", "icon": "<span class=\"lic\"><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M247.6 8C387.4 8 496 115.9 496 256c0 147.2-118.5 248-248.4 248C113.1 504 0 393.2 0 256 0 123.1 104.7 8 247.6 8zM55.8 189.1c-7.4 20.4-11.1 42.7-11.1 66.9 0 110.9 92.1 202.4 203.7 202.4 122.4 0 177.2-101.8 178.5-104.1l-93.4-41.6c-7.7 37.1-41.2 53-68.2 55.4v38.1h-28.8V368c-27.5-.3-52.6-10.2-75.3-29.7l34.1-34.5c31.7 29.4 86.4 31.8 86.4-2.2 0-6.2-2.2-11.2-6.6-15.1-14.2-6-1.8-.1-219.3-97.4zM248.4 52.3c-38.4 0-112.4 8.7-170.5 93l94.8 42.5c10-31.3 40.4-42.9 63.8-44.3v-38.1h28.8v38.1c22.7 1.2 43.4 8.9 62 23L295 199.7c-42.7-29.9-83.5-8-70 11.1 53.4 24.1 43.8 19.8 93 41.6l127.1 56.7c4.1-17.4 6.2-35.1 6.2-53.1 0-57-19.8-105-59.3-143.9-39.3-39.9-87.2-59.8-143.6-59.8z\"/></svg></span>", "rec": "WzE5NiwgMTE3LCAxNjEsIDIzNiwgMTI2LCAxOTEsIDE3OSwgNDg0NTIsIDQ0MTU1LCAxMTgsIDQ5LCA4MywgNTksIDg3LCAyMTQsIDE2NCwgNTEsIDEzNCwgMjA0LCA2NSwgMTMzLCA0NiwgMjE4LCA0ODY3OSwgNTA4NDAsIDQ3NTc4LCAyNiwgMTMzLCA1MTM3NSwgNDQyNDEsIDUxMTk5LCA5MSwgNTExNjQsIDUwNjQ4LCAxMDksIDUwOTM2LCA0NzQ5NywgMTQ2LCA0Nzg0MywgNTEzMzYsIDEyNCwgNTEwNDIsIDUwODg5LCA1MTAzMiwgODMsIDUxMjc4LCA1MTAxMCwgNDQ0ODYsIDUxMDY2LCA1MTE5MywgMTIzLCA0ODM2MywgNDYwNzgsIDEzNSwgNTQ3MzMsIDQ2ODc4LCA1MTA5OSwgMTAwLCA1NDc2MiwgNTA3NDIsIDU0NzI5LCA0NTU5MywgMTAsIDE5OSwgMjVd"}, {"id": "i3", "q": "CC BY-ND 그림의 색을 바꿔서 SNS에 공유한다.", "icon": "<span class=\"lic\"><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3zm94 144.3v42.5H162.1V197h180.3zm0 79.8v42.5H162.1v-42.5h180.3z\"/></svg></span>", "rec": "WzYzLCAyMDgsIDEwOCwgOTksIDk0LCAxNzEsIDIxOCwgNDg0OTUsIDQ0MjgwLCA2NywgMTEwLCAxNzIsIDg1LCAzOCwgMTUwLCA1NSwgMTMxLCAxMDIsIDIzNSwgODksIDE5NiwgMjEsIDExMSwgNDgzNzksIDQ0MjUyLCA0NDc1MiwgNTE1NTQsIDEwOCwgMTE2LCA1MTQxMywgNDQwOTYsIDUxMDIwLCAxNjUsIDUxMTgwLCA1MDY2NCwgMTg5LCA0ODEzMSwgNDQwOTQsIDU0NjQ5LCAxMzMsIDQ0MjQ5LCA0NDE5NCwgNDgxMTAsIDUxMDMwLCAyNDcsIDQ0MTc0LCA1MTA1MCwgNTQ1NjYsIDk3LCA0OTc4MCwgODYsIDUwNTk1LCA0NTc5MiwgMjAzLCAxNzcsIDEzMl0="}, {"id": "i4", "q": "CC BY-SA 사진을 편집하고, 같은 CC BY-SA 라이선스를 붙여 공유한다.", "icon": "<span class=\"lic\"><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3zM137.7 221c13-83.9 80.5-95.7 108.9-95.7 99.8 0 127.5 82.5 127.5 134.2 0 63.6-41 132.9-128.9 132.9-38.9 0-99.1-20-109.4-97h62.5c1.5 30.1 19.6 45.2 54.5 45.2 23.3 0 58-18.2 58-82.8 0-82.5-49.1-80.6-56.7-80.6-33.1 0-51.7 14.6-55.8 43.8h18.2l-49.2 49.2-49-49.2h19.4z\"/></svg></span>", "rec": "WzI1NCwgMTE1LCAxODksIDcsIDIzMCwgMTQxLCAyMzEsIDQ0MTI5LCA0NTY4NSwgMjUsIDE1NywgMTY5LCAxMSwgNzIsIDc4LCAxMzksIDE4LCAyMjEsIDExNCwgMTUyLCA0OCwgMjA3LCAyMzYsIDQ2MDEwLCA1MTA0MSwgNTEyNzcsIDQ0MDc4LCA0ODI1NSwgNDQxNDYsIDU0NzU5LCA0NzA4OCwgMTk3LCAxNjIsIDUxMzg5LCA0NDI4MCwgNTA1NjAsIDIwNSwgNDc1MDAsIDQ0MjM4LCA1NCwgNDQxNDMsIDUxMDY0LCA0NSwgNDY5NDksIDUwOTYyLCA0OTUyMCwgNDk3MDEsIDQ3NTg5LCAyNDQsIDUxMzc3LCA1MDkyMywgNTQ2NTUsIDQ1ODE5LCAxNjEsIDIyOSwgNjRd"}, {"id": "i5", "q": "CC BY 사진을 출처와 저작자를 쓰지 않고 포스터에 사용한다.", "icon": "<span class=\"lic\"><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z\"/></svg><svg class=\"licsvg\" viewBox=\"0 0 496 512\" width=\"30\" height=\"30\" role=\"img\" aria-label=\"CC 아이콘\"><path fill=\"currentColor\" d=\"M314.9 194.4v101.4h-28.3v120.5h-77.1V295.9h-28.3V194.4c0-4.4 1.6-8.2 4.6-11.3 3.1-3.1 6.9-4.7 11.3-4.7H299c4.1 0 7.8 1.6 11.1 4.7 3.1 3.2 4.8 6.9 4.8 11.3zm-101.5-63.7c0-23.3 11.5-35 34.5-35s34.5 11.7 34.5 35c0 23-11.5 34.5-34.5 34.5s-34.5-11.5-34.5-34.5zM247.6 8C389.4 8 496 118.1 496 256c0 147.1-118.5 248-248.4 248C113.6 504 0 394.5 0 256 0 123.1 104.7 8 247.6 8zm.8 44.7C130.2 52.7 44.7 150.6 44.7 256c0 109.8 91.2 202.8 203.7 202.8 103.2 0 202.8-81.1 202.8-202.8.1-113.8-90.2-203.3-202.8-203.3z\"/></svg></span>", "rec": "WzE3LCAyNDUsIDEyLCAxMzUsIDk2LCAxMjEsIDIsIDQ4NDUwLCA0NDE1NSwgMjUsIDE5MCwgMTkzLCA1OSwgMTU3LCAyMjcsIDk3LCAxMzQsIDc4LCAyNDcsIDgwLCAxOTQsIDY2LCAxNjMsIDUxMzI5LCA0NDA2NiwgNTA2MTQsIDE1MSwgNDY0NDUsIDQ2ODgyLCAzOCwgNTEyMzEsIDUxMTQwLCA1MDk5NywgMTkzLCA1MjUzNCwgNTI0MjgsIDQ3NDA3LCAxMjEsIDQ4MzgzLCA0NjA4NSwgNDk2OTksIDEyNywgNTQzOTMsIDQ5NzU0LCA1NDU2NSwgNTA2ODIsIDU1LCA1NDU3NSwgNDU3MDMsIDE0NCwgOTEsIDFd"}]}], "lock": "기호 자물쇠", "letter": "인"}, {"key": "r4", "kind": "room", "period": 2, "title": "공공자료 보관실", "short": "공공누리", "lead": "보관실에 공공기관 자료가 가득해요. 1차시에 본 공공누리 유형표를 떠올려, 각 자료를 그렇게 써도 되는지 판정해요.", "blocks": [{"t": "judge", "id": "kogl", "title": "공공누리 판정", "opts": ["가능", "불가"], "reason": "유형의 어떤 조건 때문인지 (선택)", "cards": true, "items": [{"id": "i1", "q": "제1유형 사진을 출처를 표시하고 학교 축제 굿즈(판매용) 디자인에 사용한다.", "rec": "WzEzOSwgMjksIDExNSwgMzYsIDE5MywgMjU1LCA3LCA0NDIwNywgNDU1NzAsIDkxLCAyNDEsIDU5LCAxNCwgNTEsIDEzLCAyMzAsIDE0NCwgNTYsIDcwLCAxOTIsIDUxMjY4LCA0MywgNTA5OTMsIDU1MDI3LCA1MTEzMywgNjksIDUyNTExLCA1MjQwOCwgMzQsIDU0NTA2LCA0OTgyNSwgNDc1ODcsIDkxLCA1NDcyMCwgNDc4NTgsIDE2OSwgNDk0MDMsIDUwNjM2LCA1MTI5NCwgNDcsIDUxMDYwLCA1MDgwMiwgNDQwNDEsIDE4OSwgNDgyMDUsIDQ0MDc3LCA1MTEyMCwgMjgsIDQ0MDQzLCA0NTc5NCwgNTQ1NjksIDQ1NzYxLCAxMiwgMjUsIDY4XQ=="}, {"id": "i2", "q": "제2유형 자료를 출처를 표시하고 수업 발표 자료에 사용한다.", "rec": "WzIyNiwgMjUsIDE2NiwgMTA2LCAyMDUsIDE3MCwgMTc3LCA0NDI2NywgNDU3MDUsIDEwNSwgMzcsIDI0NSwgMzAsIDIyMSwgNTIsIDc4LCA1OCwgNDIsIDgzLCA0MywgNTEyNDAsIDIyNSwgNTExMTMsIDU1MDMwLCA1MTEyMiwgMjMyLCA0ODc1MiwgNDkyMTksIDUwNTY3LCA1MTM3OCwgMTAxLCA1MTE2NiwgNTA4MjMsIDQ3NDg3LCA2OSwgNDQxNDMsIDQ1NTc5LCA1NDU0NCwgNDQxNDMsIDExMCwgMzQsIDQ4MTk0LCA0NDA5NiwgNDYwNzUsIDIxOCwgNDQxOTIsIDQ1NTkwLCA1NDY4NCwgNDU3NTcsIDExNSwgMjI3LCA5OF0="}, {"id": "i3", "q": "제3유형 사진을 잘라 내고 글자를 덧붙여 포스터를 만든다.", "rec": "WzIxMCwgMjM0LCAyMTUsIDU2LCAxOCwgMjM2LCAxNjYsIDQ4NTUwLCA0NDA5NywgOCwgMTY1LCA2NCwgMjI0LCA2MiwgNTksIDI0MSwgMjQ0LCAxODQsIDM5LCA3NSwgNTEyMzMsIDIzOSwgNTA5OTYsIDU0OTIzLCA1MTAzOSwgMTk2LCA0ODMzMSwgNDQwNDAsIDEyOCwgNDQ3NjcsIDUxNjU1LCAxMTQsIDUxMzM0LCA0NDIwMCwgNTA5ODYsIDg0LCA1MTAwMSwgNDU3MjEsIDE2NCwgOTUsIDExXQ=="}, {"id": "i4", "q": "제4유형 지도를 수정해서 판매용 책에 싣는다.", "rec": "WzIwLCAxMDYsIDE5NSwgMjMyLCAzNSwgMTU0LCAxOTYsIDQ4NDIxLCA0NDE1OCwgMTY0LCAxLCAxMSwgMTY0LCAxMjUsIDQ1LCAxODEsIDgsIDE3MywgMjI0LCAyMywgNTEzNjQsIDIxOSwgNTA5ODksIDU0ODEyLCA1MTA2OCwgMzUsIDQ5MTUyLCA1MDUwMywgNTE0MzMsIDIyMiwgNTEwNjksIDUwODYxLCAxNDQsIDQ0NjY4LCA1MTYwNywgMTk5LCAxOTUsIDE4MiwgNDgzMDIsIDQ0MjI1LCA2MSwgNDQ3NjEsIDUxNTY0LCA1MTE0MywgNDU3NDcsIDI2LCAxNjQsIDEyXQ=="}, {"id": "i5", "q": "제0유형(자유이용) 사진을 출처 표시 없이 영상 썸네일에 사용한다.", "rec": "WzEwNSwgMzYsIDE2MCwgMTczLCAxNTcsIDE5NCwgMTk2LCA0NDE3MywgNDU3ODIsIDEzLCAyMzcsIDExLCAxMDAsIDE3LCAxOTgsIDE4NiwgMTc0LCAyMzEsIDE4OSwgMTc2LCA1MTMzMiwgMTY2LCA1MTE2NCwgNTQ3OTcsIDUwOTU0LCAyNDksIDUyNTI1LCA1MjI1NSwgMTYyLCA1NDM0OCwgNDk2NjUsIDIzNCwgNTEyODksIDQ0MTc1LCA4MiwgNTA2NDgsIDUxMDY2LCAyNDUsIDQ5Mzc1LCA1MDQ4MCwgNTEzMDYsIDEyOSwgNDg4MTMsIDQ5MzA4LCA1MDQ2NCwgNTEzODksIDE0OCwgNTExMjcsIDUwOTMxLCAxMDMsIDQ4MjU5LCA4MywgNDgzNjIsIDQ0MjE5LCA1MTExNSwgMzYsIDQ0Mjg1LCA0NTYzMywgNTQ3MzIsIDQ1NzE5LCAxNjYsIDE2NiwgMjA0XQ=="}]}], "lock": "판정 자물쇠", "letter": "터"}, {"key": "r5", "kind": "room", "period": 2, "title": "디지털 서버실", "short": "디지털·SW", "lead": "서버실 컴퓨터가 잠겨 있어요. 디지털 저작물 보호 기술과 소프트웨어 라이선스를 분류해야 열려요.", "blocks": [{"t": "sort", "id": "protect", "title": "보호 기술 분류", "lead": "어떤 기술이 쓰인 걸까요?", "bins": [{"name": "디지털 저작권 관리(DRM)", "desc": "접근·복제·이용을 통제"}, {"name": "디지털 워터마크", "desc": "저작권자·식별 정보를 삽입"}], "items": [{"label": "정해진 음원 앱에서만 재생되는 음악 파일", "id": "c1", "rec": "WzE2OSwgMjUwLCAxMiwgMTU3LCAxMTIsIDI0NywgMTY0LCA0NjQxOSwgNTE2ODEsIDUzNjMwLCAyMDgsIDUxMjYxLCA1MDk3OCwgNDQzNTAsIDExOSwgNDQzOTMsIDQ3NDY4LCAyNDAsIDg2LCAyLCAyMjksIDUzLCAxNCwgOTZd"}, {"label": "영상에 몰래 넣은 식별 정보로 불법 유포자를 찾아냄", "id": "c4", "rec": "WzE3MSwgMTMsIDYwLCAxMiwgMTQzLCA0OSwgMTI0LCA0NjQ4NywgNTE2OTUsIDUzNTQ0LCAxMTcsIDUwNzEyLCA1Mzc1MCwgNDc2MDUsIDUzNDE4LCAyNDUsIDEyM10="}, {"label": "다른 기기로 복사할 수 없게 막힌 전자책", "id": "c2", "rec": "WzYwLCA4MCwgNjYsIDIwNCwgMjM4LCAxNzYsIDIxLCA0NjQ1MywgNTE0NzgsIDUzNzE0LCAyNywgNTEzNDcsIDUwOTc2LCA0NDUxNCwgNCwgNDQ1MDEsIDQ3NTMyLCA4MiwgMjIzLCAzNCwgMTExLCAxNTMsIDEyNSwgNTZd"}, {"label": "사진 속에 눈에 안 보이게 숨겨 둔 작가 정보", "id": "c3", "rec": "WzE2NywgMjAzLCAxOTEsIDI0NywgMTQsIDIzNCwgMjU0LCA0NjU4MiwgNTE1MjksIDUzNjE4LCAxNDUsIDUwOTAyLCA1MzUyNywgNDczOTcsIDUzMjcyLCAyMzUsIDg2XQ=="}]}, {"t": "sort", "id": "sw", "title": "소프트웨어 라이선스 분류", "lead": "프로그램 카드를 알맞은 상자로 옮겨요.", "bins": [{"name": "상용 소프트웨어"}, {"name": "셰어웨어"}, {"name": "프리웨어"}, {"name": "오픈 소스 소프트웨어"}], "items": [{"label": "안드로이드 오픈소스 프로젝트(AOSP)", "id": "c7", "rec": "WzE2MywgNzUsIDU5LCAyMTQsIDgxLCAxOTAsIDE2MywgNTA4MjAsIDU0NjY5LCA4OSwgNDk1NjEsIDQ5Nzc1LCAxMzgsIDQ5NDI2LCA1NDc3NSwgNTM3ODQsIDUwNzM1LCA1MDYwMywgNiwgMTgyXQ=="}, {"label": "한글", "id": "c2", "rec": "WzIxLCA2NCwgNDAsIDU2LCAxNzksIDIwMywgMjMyLCA0OTMxOSwgNTA4ODcsIDE4OSwgNDk1MTYsIDU0NjQ4LCA1MzgxNCwgNTA4NjQsIDUwNTc2LCA1MywgMTY2XQ=="}, {"label": "포토샵", "id": "c3", "rec": "WzIwMywgMjAxLCAyMjcsIDE4MiwgNCwgMTQsIDk3LCA0OTI2MywgNTA5MTksIDgxLCA0OTQ4MiwgNTQ2NjAsIDUzOTU3LCA1MDc3NSwgNTA0OTQsIDU4LCAyXQ=="}, {"label": "리눅스", "id": "c6", "rec": "WzE4OSwgMjMyLCAyMzcsIDIxOSwgMTIsIDkzLCAxNDMsIDUwNzc1LCA1NDU0MCwgMTMyLCA0OTU2NCwgNDk2OTcsIDQwLCA0OTQ1MywgNTQ1NjUsIDUzOTM4LCA1MDkxNywgNTA1MjgsIDQ3LCAyMjZd"}, {"label": "윈도우", "id": "c1", "rec": "WzE5NiwgOCwgMjE0LCAxNDIsIDE1MSwgMTYzLCAxMzYsIDQ5MTgzLCA1MDg2NiwgMTI2LCA0OTY2MywgNTQ1NzcsIDUzOTczLCA1MDg1MCwgNTA1OTQsIDE4MCwgOF0="}, {"label": "14일 무료 체험판", "id": "c4", "rec": "WzM4LCAyMDgsIDE3NywgMTcsIDYxLCAyMDQsIDEwMSwgNDk1OTEsIDUwNjMzLCA1MDY4OCwgNTA2MTAsIDExOCwgNThd"}, {"label": "개인 사용자에게 무료로 제공되는 프로그램", "id": "c5", "rec": "WzQzLCAxNTcsIDU4LCAxMywgMTksIDE2NywgMjQyLCA1NDU5NCwgNDczNzcsIDUwNjg5LCA1MDUyNCwgMTMzLCAxMzdd"}]}], "lock": "분류 자물쇠", "letter": "건"}, {"key": "r6", "kind": "room", "period": 2, "title": "AI 실험실", "short": "생성형 AI", "lead": "카피몬이 AI로 축제 영상을 만들고 있어요! AI 사용을 판정하고, 최신 AI 저작권 퀴즈를 풀어요.", "blocks": [{"t": "judge", "id": "ai", "title": "나의 판단", "reason": "이유 (선택)", "cards": true, "items": [{"id": "i1", "q": "AI가 만든 글을 그대로 제출하기", "opts": ["괜찮다", "조건 확인", "위험"], "rec": "WzE3MCwgNzksIDE2NywgMjEwLCAxNiwgNDMsIDExNywgNTExNjcsIDU0NjUyLCAxNTMsIDIyNiwgODYsIDMzLCA2NCwgMjA4LCAxODQsIDE5MiwgMTk1LCAyMTIsIDI0LCA1MTM1MiwgNTExMTgsIDQ0MzE4LCAxMCwgNDgwMjcsIDUxMzI4LCA1MDcwMCwgMTUwLCA0ODM1NCwgNDQxMzEsIDQ3MTM1LCAyMzcsIDI1NCwgNDQzOTcsIDQ5MzkzLCA0NDIyMiwgNjcsIDUxNDA2LCA1NDc1MCwgMjU1LCAyMzQsIDE5LCAxNzIsIDQ5Mjg4LCA1MDg2OSwgMTI4LCA0NDQ3MywgNTI4NTQsIDUxMDUyLCA0NTIyMiwgMSwgNTExNDksIDQ0NjQ3LCAyMjYsIDUxMDIwLCA0OTU3NywgMjI4LCA1MDkwMiwgNTI5MDUsIDUwOTY3LCAxNTMsIDUwNjgzLCA0NDcxOCwgMTA4LCA0OTg2MywgMTk2LCA1MTA1NCwgNTA0NjgsIDIyNSwgNDQwNDMsIDUxNDQ0LCAyMTMsIDUxMDU3LCA0NzQ3MCwgMTI0LCA0ODA3MywgNTE0MTUsIDQ0MTI4LCAyMTUsIDQ5MzU2LCA0NDY4OSwgMjE1LCA0OTgyNywgMTQsIDUwOTY4LCA0NTc1NCwgOSwgNjcsIDI4XQ=="}, {"id": "i2", "q": "AI 이미지 사용 사실을 밝히고 발표 자료에 넣기", "opts": ["괜찮다", "조건 확인", "위험"], "rec": "WzE2NywgMzQsIDIyMiwgMTYyLCAxNjMsIDE5MiwgODMsIDUxNDA0LCA0NDIzOSwgNjAsIDU0OTYzLCA1MTAxMSwgMzUsIDgxLCA1MywgMjMsIDUzLCAxMDAsIDIzNywgNTQsIDEwNCwgMTAyLCAyNDcsIDcsIDEwMCwgMTY3LCA0OTI3MSwgNTA5MTEsIDExNSwgNDkzODksIDQ5NzU1LCA1MTE0MywgMTczLCA0ODI5NywgNTQ4NDcsIDQ2MDUyLCA0Njk5MSwgNDU4NzQsIDc0LCA0NDIzNCwgNTEzNzEsIDExMiwgNDQ1MTEsIDUyOTAyLCAxODUsIDExOCwgODQsIDI2LCA4MCwgNDk1NDUsIDQ4Njg2LCA0OTc1OCwgNTExOTIsIDQ4LCA1MTE5NiwgNTA4OTIsIDIwNSwgNTE0MzIsIDQ0MDk5LCAyMDIsIDcwLCA0NDU5NSwgNTE0MzAsIDE3MiwgNTExODAsIDU0MzA3LCA0NDI4NywgNTExMTIsIDE1MSwgNTA5OTgsIDQ5MzE4LCA0OTUxMCwgMTM2LCA0NjIzOSwgNTExMzgsIDEwNywgNTQ4NjUsIDUxMTMwLCA1NDY2OSwgNTA2MTAsIDE2OCwgNTQ2ODksIDQ1NjY1LCAzOCwgNDcsIDgxXQ=="}, {"id": "i3", "q": "“유명 작가 스타일로 그려 줘”라고 요청하기", "opts": ["조건 확인", "위험"], "rec": "Wzc5LCA5NywgMTQ4LCAyMjEsIDI4LCAxNTAsIDEwNywgNTEzMTAsIDQ0MDUwLCA4OCwgNTQ4ODQsIDUxMDUxLCA4MSwgNywgMzQsIDUwOTU4LCA1NDc0NiwgOSwgNDQsIDEyMSwgMTkzLCA4LCAxNiwgMTU0LCAxMTEsIDE1MywgMTIzLCA3NCwgNTM4MjUsIDUxMjk5LCA1NiwgNTEwOTAsIDQ0MDg3LCA1MTEzMiwgODQsIDU0OTIyLCA1NDQ2OSwgMjA2LCA0OTg0MywgNTMyNTEsIDUxMDg5LCAxMjQsIDUxMDk2LCA1MjM1MSwgNDc1NTksIDUxMTM2LCA0NzE3MiwgMjQ5LCA1MTI4MCwgNTEwMzUsIDQ0NDA3LCA4LCA1Mjg0OCwgNTQ1NjcsIDQ2OTgwLCA0NDA5NCwgMTM1LCA0NTgwMywgNTEyNjgsIDU0NTU3LCAxNzMsIDQ5NzAyLCA0NTU3MCwgMTAzLCA1MDQ0NSwgNTE1MTAsIDQ3NTE4LCA3NywgNDYsIDQ0MTQ5LCA0NDIwMiwgNDc4NzIsIDUxMTQ0LCAzNCwgNDQ3MDYsIDUxMjUwLCA4LCA1MDk4NSwgNTQ0ODcsIDUxMTgxLCAxNiwgNDQ0MzUsIDUyMzQzLCA1MTI2MSwgNTEwOTEsIDkxLCA1MjM1OCwgNTEwMzgsIDUxMzAyLCA4MywgNTQzMTgsIDU0OTYwLCA0NDI1NiwgNjYsIDQ3NTkwLCA1MDgxNSwgMTQ2LCA0ODczMCwgNDk3MDUsIDU0NjUxLCA0NzY3MywgNTcsIDUxMzAwLCA1MDk1OCwgNDQzMjQsIDExMSwgNDc5MjcsIDUxMjQ5LCA0NDEyNSwgMTA2LCA0OTQwMSwgNDQ3MTgsIDExNSwgNDk4ODksIDExMywgNTA5OTIsIDQ1Nzk4LCAyMjcsIDMyLCAxODZd"}, {"id": "i4", "q": "AI 결과물이 기존 작품과 너무 비슷한지 확인하기", "opts": ["필요하다", "필요 없다"], "rec": "WzE1LCAxNjAsIDIzMiwgNTUsIDk4LCAyMCwgMjQ3LCA1NDU4NiwgNTA4NDcsIDU0NTc1LCA0NTY3MCwgMTAsIDEsIDg1LCA0LCAxNjgsIDYzLCAxMDYsIDIwMSwgMzEsIDEwMSwgMTgyLCA0NDc3NSwgNTEzOTcsIDExMiwgNTEzMTksIDUxMTQwLCA0ODA5NCwgNTA5NzIsIDE4MCwgNTM1NTcsIDQ1OTIzLCA0NzI5OSwgNDEsIDQ3NDI0LCA0NjMyNiwgNTA2MTIsIDUxMjAyLCA0NDE3NiwgMTcyLCAyOCwgNDQ2NzIsIDUxMzc1LCA0OCwgNTEzNjQsIDUwOTk3LCA0Nzk5MSwgNTEwNzgsIDM1LCA1MjM5MSwgNTEwNzAsIDUxNDIzLCAxNywgNTQ0MDYsIDU1MDA0LCA0NDEyNCwgMTQ0LCA0OTg0MiwgNTE2ODYsIDUxMzY0LCA1MDk3NCwgNDczNDksIDkyLCA1MTExNCwgNDkxNjksIDU0NjI5LCA0NzgwOCwgMTQwLCA1MTM5NiwgNTExNDUsIDQ0NTI4LCAxMjYsIDUyOTY2LCA1NDUzNywgNDcsIDQ4MDE3LCA1MTIxNSwgNDQxNDMsIDE0NiwgNDkzMjksIDQ0NTkzLCAxNjksIDQ5ODc4LCAyNSwgNTEwMDcsIDQ0NjA5LCA1LCA0NjM3MywgNDgwNDksIDUxMTI2LCA0NTcwNiwgOTYsIDEyMSwgMjIxXQ=="}]}, {"t": "judge", "id": "news", "title": "2026 최신! 생성형 AI와 저작권", "items": [{"id": "i1", "q": "AI도 저작자가 될 수 있을까?", "opts": ["O", "X"], "rec": "WzM1LCA5OCwgMTg3LCA2OCwgMzAsIDIwOSwgNzYsIDEwNiwgMjM5LCA3MSwgMjI2LCAxNjcsIDUyLCAyOSwgMTEyLCAyMDAsIDEzMiwgMjI3LCAxMDMsIDU0ODgyLCA1NDU3NSwgMTgzLCA1MTMyMiwgNTA5NDQsIDQ0NDk2LCA0ODI3NiwgNTEwNjgsIDE3LCA1MTE2OSwgNDQyMzUsIDUxMDIzLCAyNDksIDUyNDM4LCA1MTA2OCwgNDc5MDgsIDUxMTUxLCA4NSwgNTEyMTAsIDUxNDM0LCA0NzI2NSwgMjksIDU0NTczLCA0NzkzMCwgNDcyNjIsIDE5NSwgMjMsIDY2LCAyNTMsIDE0NCwgNTExOTIsIDUyMzIwLCA0NTczNiwgMTUxLCA1MTQxNCwgNTA5NzQsIDUxMDU4LCA0NzIxNCwgMTYsIDUxMDE2LCA1MTIxNSwgNDYxNzgsIDUxNjcxLCA2MSwgNTA2NTAsIDQ1Nzk4LCA0NTc1MSwgMjMyLCAxMDUsIDE0NF0="}, {"id": "i2", "q": "프롬프트만 입력하면 결과물이 모두 내 저작물일까?", "opts": ["O", "X"], "rec": "WzIwMiwgMjM2LCAxNTIsIDE2NSwgMjI5LCAyMDksIDE5NywgMjAsIDEwOCwgMCwgMTY4LCAyMjcsIDk2LCAxODcsIDU0LCAyMTcsIDI1MywgMTcsIDEzNCwgNTExMzEsIDQ0MjAyLCA1MTA2OCwgNDMsIDUwNjU0LCA0NzQxNiwgNDUxNDcsIDEzLCA1MjQxMiwgNTA5OTYsIDUxMzU1LCA1MTExNSwgNDcyMTIsIDE0MywgNDQ3NTEsIDUwNDg1LCA1NDU4NiwgNDU3OTQsIDUxNTQ4LCA0NDIzNCwgMjIzLCA1MTY2MSwgNTA5MDQsIDU0Nzc5LCA0NTYwOCwgMTQ1LCAxMTgsIDQ5Mzk4LCA0Njg3MCwgNTExMzcsIDI0MiwgNTIyNjQsIDUxMDA1LCA0OTYzMSwgNTEwNDMsIDY3LCA1MTA1MCwgNTE0MDcsIDQ2MjU2LCA0NTYxMCwgNTAsIDQ0MTc4LCA1NDU2OCwgMTIxLCA0OTg0NywgNTEyMjQsIDkyLCA0OTQyNSwgNTMyNzIsIDIzNiwgNDgzNDYsIDUwNDk0LCAyMDgsIDQ4NTI3LCA0ODUwMiwgNTExMzQsIDE1MywgNTEyMjgsIDUxMTY1LCA0ODA2OSwgNDczMTcsIDEzNSwgNDgyNTYsIDU0ODg2LCA0NjI3NSwgMjUyLCA0OTgxNCwgMjIsIDUxMTczLCA0NTc0MCwgMTg2LCAyNDYsIDY1XQ=="}, {"id": "i3", "q": "AI가 만든 결과물이 기존 작품과 비슷해도 괜찮을까?", "opts": ["O", "X"], "rec": "WzE4NCwgMzMsIDUwLCAxMzIsIDc5LCA5OSwgMjQzLCAyMTAsIDEwNSwgMTIyLCA5NywgMjQ5LCAxMzAsIDkxLCA1NSwgNjAsIDg3LCA4MCwgMTE5LCA0NDU5MiwgNTEzNzEsIDIzOCwgNTEyMDQsIDUxMTg1LCA0ODAxOCwgNTExNjQsIDE0OCwgNTM2MjYsIDQ1OTk4LCA0NzE3NSwgMjgsIDQ3NjEyLCA0NjIwNCwgNTA0ODEsIDUxNDEwLCA0NDA0NCwgMjE1LCAyMzcsIDQ0NTA1LCAxMzYsIDUxMjk4LCA1MTA3MCwgNDgwMzQsIDUxMDE3LCAxODMsIDUyNDE5LCA1MTE0MywgNTEyMjEsIDk5LCA1NDM5NSwgNTQ5MzMsIDQ0MTU2LCAzOCwgNDk4NjksIDUxNTg1LCA1MTQzOCwgNTExODEsIDQ3MzA0LCAyMzcsIDUxMDIwLCA0OTIwMywgNTQ3NjQsIDQ3NjcyLCAxNjcsIDUxMzMyLCA1MTA3MiwgNDQ0MTIsIDE1NCwgNDgxMDAsIDUxMzI3LCA0NDIzMiwgMTc3LCA0OTIzOCwgNDQ2NjUsIDE3LCA0OTkxMSwgNDQsIDUxMTQ5LCA0NTU5NCwgMTU5LCAyMTksIDI2XQ=="}, {"id": "i4", "q": "AI가 인터넷 저작물을 학습하는 것은 항상 자유로울까?", "opts": ["항상 자유롭다", "항상 침해다", "경우에 따라 다르다"], "rec": "WzE3NSwgMjQyLCAyNDMsIDIzNywgMjQ5LCAxODEsIDExMywgNDQyMTAsIDUwODczLCA1MDUwMSwgMTQzLCA0NjQyMywgNDY5NDIsIDYxLCA0NTYxNCwgNDc1MDgsIDQ1NjU4LCA5NCwgMjExLCA2NywgMTExLCA4OCwgMjM5LCAyNTEsIDEyNSwgNDMsIDExOCwgMjUxLCA1NDY5NiwgNDkyMzIsIDI2LCA1MTAyMiwgNTEwMzgsIDQ3MTUyLCA1MDc5MCwgMTg0LCA0NDI4NywgNDYwNDcsIDEwNiwgMzYsIDU0NzQyLCA0OTI3NiwgMjUwLCA1Mjg3MSwgNTQ2NDQsIDUwOTgzLCAxNTUsIDQ0MjIyLCA0NjA3NSwgNDMsIDUwNDkyLCA0NTYyOSwgNDU3NzcsIDIzNywgMTk2LCAxNzksIDE2MCwgMTA5LCA1NDYzMCwgNDk3MjksIDUxMDc5LCAxNDgsIDUwOTc2LCA1NDU3OSwgNTIsIDUxNDA5LCA1MTA4NSwgNDgwOTYsIDE0MywgNTExOTcsIDUwODExLCA0NjAyMiwgNzIsIDUxMjg3LCA1MDk1MCwgNDQzNTIsIDQ4Mjg0LCA1MTAwNCwgMTUxLCA1MTM4MCwgNTA4MjksIDUwOTYxLCA0MiwgNDgyMjEsIDUxMTc2LCA0NzYzMiwgMjA3LCAxNjcsIDQ0MTkwLCA1MTM2NywgNTEwNjIsIDUwODAyLCAyMDEsIDUwNDk1LCA0ODU5OSwgNDU2MjcsIDIyNSwgNTEwNzIsIDUwODQ2LCAyMTcsIDQ3NzQ5LCA1MTI5MCwgMTEyLCA0ODMyNiwgNDgzMTksIDE5MywgNDg0MzQsIDQ3MDM2LCAxMiwgNDk4NzksIDUwOTU0LCA1MDU4OCwgMTIyLCA0ODA2MCwgNTI5NzcsIDQ1Njk3LCAxODYsIDUwNjk3LCA1NDc1OCwgMTYsIDQ2MjQ3LCA1MTA2OCwgODcsIDUxMzExLCA1NDY4NiwgNTQ3NjIsIDIyMCwgNTQxMDIsIDQ1Njk2LCA1NDU2NCwgNDU1OTMsIDI2LCAxNDYsIDE2Nl0="}, {"id": "i5", "q": "AI 사용 사실 표시와 출처 표시는 같은 것일까?", "opts": ["O", "X"], "rec": "WzgzLCAzNCwgMTY0LCAzNywgMTIyLCAyNTIsIDEyOSwgNjksIDE0MSwgMjEsIDIzOSwgMjIzLCAyNiwgNDgsIDg3LCAxNDAsIDE3MiwgMTA0LCAyMTQsIDE5MywgNjYsIDIzNywgNDkzOTAsIDUwNzEyLCAyMjgsIDQ5Mzc5LCA0OTc1MCwgMjE4LCA1NDMzMSwgNDk3MTcsIDQ1NzIzLCAxNTcsIDQ0MTAzLCA1MTM1MiwgMTgsIDQ0NDIzLCA1Mjc4NCwgMTc3LCA0NjExMywgNTA1MjUsIDI1MywgNDY0MDQsIDQ2OTkzLCA3MSwgMjA1LCAyMSwgNDc1MTksIDIxNywgNTUwMjUsIDUwOTAxLCA1NDU0NiwgNDU2ODQsIDQ1NTc0LCAxMTEsIDQ5Mzc3LCA0OTc4NCwgNTExOTEsIDIxMiwgNDgyNTYsIDU1MDkzLCA0NTYyNiwgMTQsIDQ0MjU5LCA1MTExMSwgNDQxMTQsIDIxMCwgNTcsIDUyNjUyLCA1MjQzMSwgMTk5LCA1NDI4NywgNDk4MjcsIDQ1NzM4LCAxMiwgNDk5MTAsIDUxNDMyLCA4NSwgNTEwNjYsIDUwOTI0LCA1NDcxMywgNzIsIDUxMzgzLCA1MDk1NywgNDc5MDQsIDUxMDMyLCAxMDEsIDUxMzc5LCA1MTA0MiwgNTExMDksIDUwNzgxLCAyMTEsIDUyNTk4LCA1MjM5MSwgNDczODAsIDIzMiwgNDgxOTYsIDU1MTYwLCA0NTc0NywgODcsIDQ0MjMxLCA1MTAwOSwgNDU2NzUsIDEwMSwgMiwgNDJd"}]}], "lock": "판정 자물쇠", "letter": "부"}, {"key": "r7", "kind": "room", "period": 2, "title": "소문 차단실 (스스로 해보기 2)", "short": "오개념", "lead": "카피몬이 퍼뜨린 헛소문 7개! 맞는 말이면 O, 틀린 말이면 X 도장을 찍어 소문을 차단해요.", "blocks": [{"t": "judge", "id": "myths", "opts": ["O", "X"], "reason": "이유 (선택)", "items": [{"id": "i1", "q": "인터넷에 있으면 마음대로 써도 된다.", "rec": "WzEzMywgMjM3LCA5OSwgMTYwLCA1MiwgMTYwLCA2MiwgMjQ3LCAxNzMsIDEyLCAyMywgOTcsIDIyMiwgMTIzLCA5MSwgMTc0LCAyMzEsIDE4OCwgMTgwLCA0NDI0MSwgNDQxNjcsIDQ2MDg0LCA1MDU1NSwgMTk5LCA1MDk5MiwgNTA0NzIsIDQ2MDE1LCAxMjUsIDUxNDQ4LCA1MTAwMSwgNDQ1MTAsIDUxMDcyLCAxODksIDUxMTc3LCA1MTE3OCwgNjksIDQ5NzA2LCA2LCA1MTEyMywgNDU3NzgsIDksIDUzLCAxMzRd"}, {"id": "i2", "q": "출처만 쓰면 무조건 괜찮다.", "rec": "WzQyLCA4LCAxNTUsIDQxLCAyMTQsIDE3NywgMTYwLCAxODYsIDAsIDE5MSwgMzgsIDQwLCAyMCwgMTk4LCAxNSwgMjgsIDI0MCwgNDQsIDI0MCwgNTI2MzksIDUyNDAxLCAxMCwgNTQzNTEsIDQ5ODc4LCA1MDgyMCwgNjcsIDUxMDQyLCA1MDg3MCwgMTY5LCA1NDcwNSwgNDY5ODksIDUwOTk5LCAxNTQsIDQ1Nzg2LCA0NzQ4MywgNDU4MDksIDQ0LCAyNTMsIDEyN10="}, {"id": "i3", "q": "돈을 벌지 않으면 괜찮다.", "rec": "WzE3NSwgOCwgMTI0LCAyMSwgMTk0LCAzMSwgMTU2LCAxNjksIDg1LCA1OCwgMTIxLCAyNTAsIDEwLCAxNDMsIDE4NywgOSwgODAsIDIzMiwgMjQ0LCA0ODY5NCwgNTA5MzEsIDQ3NTg0LCAyMjcsIDQ3NjQ1LCA1MTM1MiwgNTA5NTEsIDUwNjI1LCA0NjAxMCwgMjA0LCA1Mjk0MywgNTQ1NTYsIDQ0MTcwLCAyMDUsIDQ2MTQ4LCAxODMsIDQ5NzY0LCAxNDIsIDUwOTkwLCA0NTcyMCwgMTgzLCA3OSwgMTY2XQ=="}, {"id": "i4", "q": "조금만 쓰면 괜찮다.", "rec": "WzI0MiwgOCwgMjAyLCAxNTEsIDM3LCAyNTMsIDIyLCAyMjUsIDI1MiwgMjcsIDczLCA3OCwgMTIxLCAyMzgsIDE3OCwgMTYzLCA0LCAxNDYsIDEzMCwgNTE2ODIsIDUxMTI2LCAxMTEsIDUxMTI5LCA1MDg4MCwgMTAyLCA1MDkyNSwgNDkxNzEsIDQ1ODQwLCAyNTUsIDQ3Njk3LCA1MTQwMCwgNDQwNzYsIDE0MiwgNDgyNDksIDQ5NzM0LCA1MDU0NiwgMTgyLCA0NjM5MywgNDY5OTEsIDI2LCA0ODA4NywgNTE0MDIsIDQ0MjYwLCA2LCA0NjMxNCwgNzUsIDQ5NjcxLCAxNzcsIDUxMDc2LCA0NTYzMCwgMjM5LCA0OSwgNDVd"}, {"id": "i5", "q": "조금 바꾸면 내 작품이다.", "rec": "WzEyOSwgMTQzLCAxMzksIDg3LCA2NywgMjksIDM2LCAyNywgMjQzLCA1MCwgMTIyLCAxODEsIDIwNSwgMTA2LCAxNzQsIDQ3LCA0NywgMTU1LCAyMTgsIDUwOTEzLCA1MTAzMCwgNTEwOTYsIDE1MiwgNDgyMjEsIDUzNDQzLCA1MDk2MiwgNDcyODksIDE2MCwgNTQ1NTksIDQ3NzEzLCAyMTMsIDEwMSwgNTIyOTMsIDUxNDQ2LCAxODUsIDUxMzIyLCA1MTE2MSwgNDc5NTAsIDQ2LCA0ODAyNCwgNTEzMzYsIDQ0MjYxLCAxMzcsIDQ5MzEwLCA0NDU0OCwgMjM0LCA0OTc0NywgMjQ5LCA1MDk3NywgNDU1ODIsIDE4MywgMTQ0LCAyNl0="}, {"id": "i6", "q": "학교 과제는 예외다.", "rec": "WzE0OCwgNzgsIDIxNywgODUsIDIyNywgMTc3LCAyNCwgMjQzLCAyMjAsIDIxOCwgMjI0LCAyNTQsIDI0MSwgMTgzLCAxNDksIDY0LCA2MywgMjUwLCA0NywgNTQ3MTksIDQ0MzI3LCAyNDUsIDQ0MTI3LCA1MTM5MCwgNDY5MDUsIDQ0MTcxLCA4NCwgNTQ2MDksIDQ5NTk2LCAxOTAsIDQ3Njc5LCA0NjI1MSwgODYsIDUxNDE5LCA1MTAxMSwgNDgwNTMsIDUxMDEwLCA4MiwgNTExODcsIDUxMDQ0LCA0NzI1NSwgNDQyMTUsIDE5NCwgNTEwNzMsIDUwODc2LCA1NDczOCwgMjU1LCA0OTc2NSwgNDMsIDUxMDQ2LCA0NTcwNywgMzYsIDQ0MTk1LCA1MTAxOCwgNiwgNTA1NjYsIDQ1NzY1LCA0NTc3MSwgOTQsIDIzNywgNDk2ODQsIDUwNTI2LCAxNTEsIDQ3NzU5LCA1MTMwOCwgMywgNTExOTksIDUwODAzLCAxMTQsIDQ2MTM1LCA5MywgNDgyNzYsIDUwNDM3LCA0OTQ2NSwgMjM2LCA1MTM2OCwgNTQ1MjgsIDE3NSwgNDgxNTMsIDUxMDM2LCA1MDc2MywgMjUxLCA1MTQ1MSwgNDQyNTgsIDUxMDIxLCA5MiwgNTQ5MTMsIDUxMDg4LCA1NDU3OSwgNTA0NDgsIDEyLCA1NDcwMywgNDU3MzMsIDEyNCwgODcsIDIxN10="}, {"id": "i7", "q": "무료 자료는 마음대로 써도 된다.", "rec": "WzE5NywgMjUsIDIwNSwgMTQyLCAxOTUsIDIxNCwgMjQ0LCAxMzgsIDE4OSwgMjAzLCAxODYsIDM0LCAyMzgsIDE3MSwgMTE4LCAyMTMsIDE2MywgODQsIDg5LCA0Nzk5NSwgNDczNDAsIDY1LCA1MTEwNiwgNDcxMDcsIDQ2MDI0LCAxNDcsIDQ5MjE2LCA1MDg1MywgNTMsIDUxMzI3LCA0NDIwOCwgNTA5OTUsIDEyOCwgNTExOTcsIDQ1NjgzLCAxODgsIDE2MCwgMTM0XQ=="}]}], "lock": "판정 자물쇠", "letter": "확"}, {"key": "final", "kind": "final", "period": 2, "title": "방송실 탈출문", "short": "탈출문", "lead": "방 8개에서 모은 글자 조각을 바른 순서로 맞추면 방송실 문이 열려요. 오늘 수업에서 가장 중요한 한마디예요!", "blocks": [{"t": "final"}]}, {"key": "boss", "kind": "boss", "period": 2, "title": "최종 대결: 카피몬 (스스로 해보기 1)", "short": "보스전", "lead": "방송실 안에 카피몬이 있어요! 1차시에 배운 내용을 떠올려 빈칸을 채우고 <b>공격!</b>을 누르면 맞힌 문장 수만큼 체력이 깎여요. 틀린 문장은 고쳐서 다시 공격!", "blocks": [{"t": "boss", "id": "boss", "items": [{"id": "q1", "html": "저작물은 인간의 ( ⟦k37⟧ ) 또는 ( ⟦k38⟧ )을 표현한 ( ⟦k39⟧ )이다."}, {"id": "q2", "html": "저작권은 저작자가 자신의 ( ⟦k40⟧ )에 대해 가지는 권리이다."}, {"id": "q3", "html": "저작권은 저작물을 만든 ( ⟦k41⟧ )부터 발생한다."}, {"id": "q4", "html": "단순한 ( ⟦k42⟧ )는 저작물이 아니며, 표현된 창작물이어야 한다."}, {"id": "q5", "html": "저작인격권은 저작자의 ( ⟦k43⟧ )와 인격을 보호한다."}, {"id": "q6", "html": "저작재산권은 저작자의 ( ⟦k44⟧ ) 이익을 보호한다."}, {"id": "q7", "html": "저작재산권은 원칙적으로 저작자 생존 기간과 사망 후 ( ⟦k45⟧ )년까지 보호된다."}, {"id": "q8", "html": "출처 표시는 내가 사용한 자료를 누가 만들었고 어디에서 가져왔는지 ( ⟦k46⟧ )는 것이다."}, {"id": "q9", "html": "출처 표시와 이용 ( ⟦k47⟧ )은 같은 뜻이 아니다."}, {"id": "q10", "html": "CCL의 BY는 ( ⟦k48⟧ ) 표시, NC는 ( ⟦k49⟧ ), ND는 ( ⟦k50⟧ ) 금지, SA는 ( ⟦k51⟧ ) 조건 변경 허락이다."}, {"id": "q11", "html": "공공누리 자료는 적용 ( ⟦k52⟧ )을 확인하고, 출처 표시·상업적 이용·변경·AI 학습 등 이용 조건을 확인해야 한다."}, {"id": "q12", "html": "무료 프로그램과 무료 폰트도 이용 ( ⟦k53⟧ )이 있다."}, {"id": "q13", "html": "공식 ( ⟦k54⟧ ) 공유와 파일 직접 공유는 다르다."}, {"id": "q14", "html": "캡처는 ( ⟦k55⟧ )가 될 수 있고, 공유하면 전송 등 저작권 문제가 생길 수 있다."}, {"id": "q15", "html": "AI를 사용할 때에도 저작권 확인과 과제 규칙에 따른 사용 사실 표시, 과제 ( ⟦k56⟧ )는 중요하다."}]}]}, {"key": "rethink", "kind": "open", "period": 2, "title": "다시 생각해보기", "short": "다시 생각", "lead": "1차시 처음에 판단했던 사건이에요. 오늘 배운 내용으로 다시 판정해 보세요. 처음 내 판단이 옆에 표시돼요.", "blocks": [{"t": "judge", "id": "rethink", "opts": ["○", "△", "×"], "reason": "판단 이유 한 줄", "compare": "think", "items": [{"id": "i1", "q": "구글 이미지에서 찾은 사진을 발표 자료에 넣고 출처를 쓰지 않았다.", "rec": "WzYzLCA4NSwgMjQ0LCAxNjYsIDE2NSwgMjEzLCAyNTEsIDk2NjAsIDE2MSwgNDY3NjcsIDQ1NzUyLCA4NiwgMTY4LCAxMDYsIDIxNiwgMTUsIDIyNCwgMTQ0LCA0MSwgMjI5LCA4LCAyMjMsIDIwNCwgMTQxLCA1MTAyMywgNDgwNTAsIDUxNDcyLCA0NTk5OCwgNzcsIDUxMzM5LCA1MDk3MSwgNDgxMDEsIDUxMTE1LCA3NiwgNDk4NzMsIDI1MSwgNTExNjEsIDQ0MTA1LCAxNjYsIDIwNSwgNTI1NzcsIDUyMzM5LCA1MDg1MywgMzEsIDUxMDMyLCA1MDkxMywgMjcsIDUxMjQzLCA0NDA1NywgNTExMTUsIDk0LCA1NDg1MywgNTA5ODIsIDU0NzUwLCA1MDU5OSwgMTQzLCA1NDUzOCwgNDU4MDksIDc3LCAyMzEsIDUyNTEzLCA1MjQ0NSwgMjA5LCA1MDU0NSwgNTA5NDcsIDIyMSwgNTAyNzcsIDQ3NzA1LCAxMzYsIDUxMTE4LCA1NDU1MiwgNTQ2NjQsIDQ1NzA5LCAzNSwgMTM1LCAxMTdd"}, {"id": "i2", "q": "유료 웹툰 장면을 캡처해서 반 단체방에 올렸다.", "rec": "WzIxNiwgMTYyLCAxNzgsIDE3MCwgODgsIDE2OSwgNTUsIDI1LCAyMTgsIDExMiwgNTIsIDE5NywgMTE0LCAxMDIsIDI1NCwgMjI0LCA4LCAxNTYsIDE5MCwgNTI4NjYsIDUyMjcyLCA0NTY3NiwgMTkwLCA0ODIxNSwgNTEyOTcsIDQ0MjAwLCA2LCA0NjE5NywgMTQ2LCA0OTgyMSwgMjA2LCA1MDk5OSwgNDQwODIsIDIyNywgMjEzLCA0NTYzOCwgNTIzMTcsIDQ4MzEwLCA1MDYyMSwgNDYsIDUwNzc4LCA0NzM4NiwgNDc2ODQsIDEwNywgNTEzMDMsIDQ5NjU5LCA1MTEyMSwgMjI2LCA0NjA4MCwgMTA0LCA0OTkwMywgMTIwLCA1MTA0NCwgNTA1NDksIDEyNSwgNTEwNTYsIDU0NTQ4LCA1NDcwOCwgNDU4MTIsIDgyLCA4NiwgMTg5XQ=="}, {"id": "i3", "q": "무료 폰트를 내려받아 학교 발표 자료에 사용했다.", "rec": "WzEzMiwgODEsIDM5LCAxMzIsIDE3MSwgOTMsIDk0LCA5NTU3LCAxNTcsIDAsIDcxLCA2OCwgODYsIDE3NCwgODksIDQ4LCAxODcsIDI0OCwgMTAxLCA0Nzg5MSwgNDcyMzEsIDQ3MDE1LCA0NTkwOCwgMTA2LCA0NDIzMCwgNTExNjEsIDIyOSwgNTQ1NjEsIDQ0NDU4LCAxNTEsIDUwODAzLCA0OTM4NCwgNTQsIDQ5MzkyLCA1MDUyNCwgNTEyMDUsIDQ3LCA1MTA1OCwgNTA5MTIsIDkyLCA1MTI3NCwgNDQxMDEsIDUxMDkyLCAzMywgNTQ5MDMsIDUxMTc3LCA1NDY5NCwgNTA0NDksIDEyLCA1NDU1MywgNDU2MDUsIDY5LCAxNDUsIDI0N10="}, {"id": "i4", "q": "언론사 공식 기사 링크만 친구에게 공유했다.", "rec": "WzEyOCwgMjUxLCA4MCwgMjM3LCA5MiwgODMsIDI1MSwgOTYwNiwgMTExLCA0Njc0NiwgNDU3NzcsIDE1NiwgOTU0MywgMTkzLCA5MCwgMTgyLCA3MCwgMTIwLCA4MywgMjAyLCAxNzMsIDUwLCAxMDcsIDE0NywgNDQyMzYsIDQ5ODA4LCA3LCA0NzYxNSwgNTMyNTAsIDE2OSwgNDQyNzIsIDUxMDIxLCA0NTcxMywgNiwgNDg4NDEsIDQ0MjkyLCA1MTMwMiwgMjQwLCA1MDQ1NSwgNTEzOTIsIDU0NzI3LCA1MTY3OSwgNDczNzEsIDIzMiwgMzAsIDQ5MjEwLCA1MTEzMiwgNTM4OTMsIDQ3LCA1MDQ1MywgNDQ1MTIsIDQ0MjMxLCAxNDgsIDQ5MTYzLCA1NDc4NywgNTEwNzUsIDQ5LCA1NDg0NywgNTExNzUsIDU0NjQyLCA0NTYyNCwgMTg1LCAyMjIsIDEwNl0="}, {"id": "i5", "q": "AI가 만든 글을 그대로 수행평가에 제출했다.", "rec": "WzEwMywgMjQ4LCAxNDgsIDgyLCAyMjIsIDIyMSwgMTAsIDEyMywgMSwgMzEsIDE1LCAyNDksIDU0LCA0OSwgMTY3LCAyNDYsIDMyLCAyMjQsIDEyOCwgNDQ1MTgsIDQ5MjgzLCA0NDA1NiwgMjIwLCA1MTM0NCwgNTQ2NjgsIDIyOSwgNDQsIDE1MiwgMTk1LCA0OTI0NSwgNTA3ODMsIDIwNywgNDQ1MjAsIDUyODU0LCA1MDk3MSwgNDUyMDksIDI5LCA1MTE4MSwgNDQ2MzksIDE1OCwgNTExNDUsIDQ5NTg0LCAxNzUsIDUwNzkxLCA1Mjc2NywgNTEwMzcsIDIzOCwgNTA0ODIsIDQ0NTUwLCAyNywgNDk4NjYsIDE4NCwgNTEwMTQsIDUwNjY4LCAxMTAsIDQ0MTQyLCA1MTQwNiwgNzcsIDUwOTc0LCA0NzQyOCwgOTEsIDQ3OTE4LCA1MTI0MSwgNDQyMzMsIDEsIDQ5MzcwLCA0NDU3NSwgNDU2NzIsIDY2LCAxMjUsIDg5XQ=="}]}, {"t": "free", "id": "changed", "q": "생각이 가장 많이 바뀐 사건은? 왜 바뀌었나요?", "ph": "예) ③번, 무료 폰트도 조건이 있다는 걸 알게 되어서", "rows": 2}]}, {"key": "submit", "kind": "submit", "period": 2, "title": "탈출 보고서 제출", "short": "제출", "lead": "수고했어요, 수사관! 탈출 보고서 PDF에는 문제마다 맞고 틀림, 정답과 해설이 나와요. 틀린 문제를 꼭 읽어 보고 구글 클래스룸 과제에 제출하세요.", "blocks": [{"t": "submit"}]}], "blanks": {"k1": {"w": 3, "cho": "ㅈㅈㅁ", "tiles": ["저", "물", "작"]}, "k2": {"w": 2, "cho": "", "tiles": ["상", "사"]}, "k3": {"w": 2, "cho": "", "tiles": ["정", "감"]}, "k4": {"w": 3, "cho": "", "tiles": ["작", "창", "물"]}, "k5": {"w": 2, "cho": "", "tiles": ["현", "표"]}, "k6": {"w": 3, "cho": "", "tiles": ["성", "작", "창"]}, "k7": {"w": 3, "cho": "ㅈㅈㅈ", "tiles": ["자", "저", "작"]}, "k8": {"w": 4, "cho": "ㅈㅈㄱㅈ", "tiles": ["권", "자", "작", "저"]}, "k9": {"w": 3, "cho": "ㅈㅈㄱ", "tiles": ["저", "권", "작"]}, "k10": {"w": 5, "cho": "", "tiles": ["권", "작", "인", "저", "격"]}, "k11": {"w": 2, "cho": "", "tiles": ["예", "명"]}, "k12": {"w": 5, "cho": "", "tiles": ["재", "권", "저", "산", "작"]}, "k13": {"w": 3, "cho": "", "tiles": ["경", "적", "제"]}, "k14": {"w": 3, "cho": "", "tiles": ["시", "에", "동"]}, "k15": {"w": 3, "cho": "", "tiles": ["능", "불", "가"]}, "k16": {"w": 2, "cho": "", "tiles": ["0", "7"]}, "k17": {"w": 2, "cho": "", "tiles": ["락", "허"]}, "k18": {"w": 2, "cho": "", "tiles": ["위", "범"]}, "k19": {"w": 5, "cho": "", "tiles": ["없", "락", "이", "허"]}, "k20": {"w": 2, "cho": "", "tiles": ["크", "링"]}, "k21": {"w": 12, "cho": "", "tiles": ["허", "락", "시", "저", "용", "작", "이", "물", "표"]}, "k22": {"w": 6, "cho": "", "tiles": ["시", "저", "표", "작", "자"]}, "k23": {"w": 2, "cho": "", "tiles": ["Y", "B"]}, "k24": {"w": 3, "cho": "", "tiles": ["비", "리", "영"]}, "k25": {"w": 2, "cho": "", "tiles": ["C", "N"]}, "k26": {"w": 4, "cho": "", "tiles": ["지", "금", "변", "경"]}, "k27": {"w": 2, "cho": "", "tiles": ["D", "N"]}, "k28": {"w": 8, "cho": "", "tiles": ["변", "경", "동", "일", "건", "조", "락", "허"]}, "k29": {"w": 2, "cho": "", "tiles": ["A", "S"]}, "k30": {"w": 4, "cho": "ㄱㄱㄴㄹ", "tiles": ["리", "공", "누", "공"]}, "k31": {"w": 4, "cho": "ㄱㅇㅁㄷ", "tiles": ["유", "당", "공", "마"]}, "k32": {"w": 7, "cho": "ㄷㅈㅌ ㅈㅈㅁ", "tiles": ["저", "지", "작", "물", "털", "디"]}, "k33": {"w": 2, "cho": "", "tiles": ["제", "복"]}, "k34": {"w": 2, "cho": "", "tiles": ["송", "전"]}, "k35": {"w": 3, "cho": "", "tiles": ["M", "R", "D"]}, "k36": {"w": 8, "cho": "", "tiles": ["지", "털", "터", "디", "크", "마", "워"]}, "k37": {"w": 2, "cho": "", "tiles": ["상", "사"], "rec": "WzIyMywgNDAsIDEwMywgNjYsIDk4LCAxNDgsIDIzNiwgNDk0MDcsIDQ5MzcwLCAxMjUsIDI1XQ=="}, "k38": {"w": 2, "cho": "", "tiles": ["정", "감"], "rec": "WzI1NSwgMTUwLCA4NywgNTIsIDk0LCAyMzQsIDEzLCA0NDE5MywgNTE0MzYsIDEwLCAxMTVd"}, "k39": {"w": 3, "cho": "", "tiles": ["작", "물", "창"], "rec": "WzI0NCwgMTUsIDcyLCAyMTQsIDY0LCA4NCwgNDQsIDUyMzI3LCA1MTE3NywgNDc5ODMsIDEyOCwgMjQzXQ=="}, "k40": {"w": 3, "cho": "", "tiles": ["물", "저", "작"], "rec": "WzUyLCAxODMsIDE5NCwgMjExLCA5NiwgMTM3LCA3OSwgNTE0MjQsIDUxMDg3LCA0ODEwMiwgNTksIDM2XQ=="}, "k41": {"w": 2, "cho": "", "tiles": ["간", "순"], "rec": "WzE2NCwgMjYsIDE4MywgMTQwLCAxMzEsIDE0NywgMjIzLCA0OTgyNSwgNDQyMzQsIDIxNSwgMTYwXQ=="}, "k42": {"w": 4, "cho": "", "tiles": ["이", "디", "아", "어"], "rec": "WzUzLCAxNTYsIDk1LCAxMjcsIDE1OSwgMTUzLCAyNTMsIDUwNjAxLCA1MTExNiwgNDY0MTYsIDUwNDM3LCAzMCwgMjAzXQ=="}, "k43": {"w": 2, "cho": "", "tiles": ["예", "명"], "rec": "WzU0LCA1NiwgMjM5LCAxMjksIDIwMSwgMTExLCAyMDksIDQ3Nzg5LCA1MDcyMiwgMTEzLCA1M10="}, "k44": {"w": 3, "cho": "", "tiles": ["적", "제", "경"], "rec": "WzEwMCwgNzAsIDIxMSwgOTQsIDc5LCAxNSwgMTg3LCA0NDE3NywgNTE0MjAsIDUxNDM1LCAxOTksIDE2Ml0="}, "k45": {"w": 2, "cho": "", "tiles": ["0", "7"], "rec": "WzIxNSwgODAsIDI1MCwgMTc2LCA2NSwgMjEsIDIyNSwgMjM3LCA0MiwgMTE3LCA3Nl0="}, "k46": {"w": 2, "cho": "", "tiles": ["히", "밝"], "rec": "WzY3LCAyMTQsIDEyNywgMTU4LCAyMzgsIDU4LCAxODQsIDQ4MjI1LCA1NTA0NSwgMjAyLCAyMF0="}, "k47": {"w": 2, "cho": "", "tiles": ["락", "허"], "rec": "WzIyLCAyNTUsIDU4LCAxMzcsIDIwNiwgMjIzLCA3MSwgNTQ1MzMsIDQ2OTYwLCAxNTEsIDExNV0="}, "k48": {"w": 3, "cho": "", "tiles": ["작", "자", "저"], "rec": "Wzc0LCAyMDgsIDYsIDc2LCAxMTcsIDExNiwgMjE4LCA1MTI2OCwgNTEwMzIsIDUxMTE4LCA3NSwgMjI4XQ=="}, "k49": {"w": 3, "cho": "", "tiles": ["리", "비", "영"], "rec": "WzEsIDc4LCAyMDMsIDEyNSwgMjM1LCAxNjAsIDE5OCwgNDg3NzEsIDUwOTMxLCA0NzM5MSwgMjMsIDE2M10="}, "k50": {"w": 2, "cho": "", "tiles": ["경", "변"], "rec": "WzIxLCAyMTYsIDEzNiwgNzMsIDksIDE4NCwgMTgzLCA0ODIwNSwgNDQwNjYsIDExNywgMjM0XQ=="}, "k51": {"w": 2, "cho": "", "tiles": ["일", "동"], "rec": "WzEwNywgMTIsIDEyNiwgMTYwLCAxODIsIDEzOCwgMjAzLCA0NTg5OCwgNTA5OTksIDE3OSwgMTgwXQ=="}, "k52": {"w": 2, "cho": "", "tiles": ["형", "유"], "rec": "WzIyOCwgMzAsIDE4NSwgMTIwLCAyMzEsIDk0LCAxOTAsIDUxMDYwLCA1NTAwMiwgMTgzLCAxNTdd"}, "k53": {"w": 2, "cho": "", "tiles": ["건", "조"], "rec": "WzYyLCAxNDAsIDE4NCwgMTkxLCAxNywgMjM5LCAyMTMsIDUxNDUzLCA0NDI4NiwgNDQsIDIyOF0="}, "k54": {"w": 2, "cho": "", "tiles": ["크", "링"], "rec": "WzgxLCA4NCwgMTk1LCAyMTcsIDE0MywgMTY0LCAyMDIsIDQ3NTc0LCA1MzM2OSwgMTk4LCA5Ml0="}, "k55": {"w": 2, "cho": "", "tiles": ["제", "복"], "rec": "WzIzNCwgMTUzLCA5OCwgMjUwLCA2NCwgNjIsIDE0MiwgNDgyNzEsIDUxMjg2LCA1OCwgMzld"}, "k56": {"w": 2, "cho": "", "tiles": ["리", "윤"], "rec": "WzE0OCwgNDEsIDExNywgMTU4LCAxOTIsIDcxLCA3NywgNTA5ODYsIDQ3NTMwLCAxMTYsIDE2OF0="}}, "tone": {"○": "ok", "O": "ok", "△": "warn", "×": "no", "X": "no", "가능": "ok", "불가": "no", "괜찮다": "ok", "조건 확인": "warn", "위험": "no", "필요하다": "ok", "필요 없다": "no", "항상 자유롭다": "ok", "항상 침해다": "no", "경우에 따라 다르다": "warn"}, "salt": "cr55-2164538", "hash": {"key:go": ["7769c2c929118"], "key:all": ["1cc971d0d11811"], "final": ["17a013b7dec0c1"], "s:isWork:c1": ["9eac653c6d231"], "s:isWork:c6": ["15b7f3f7c64a27"], "s:isWork:c4": ["b36327c40522"], "s:isWork:c5": ["1387216a846811"], "s:isWork:c2": ["13901d47dd205f"], "s:isWork:c3": ["1a7d2ae286c488"], "s:rights:c8": ["eb09b18ab7a6c"], "s:rights:c2": ["6c9768ed5896"], "s:rights:c3": ["100b55fa55fbb9"], "s:rights:c9": ["1166e48f71bc4f"], "s:rights:c1": ["1d754f6ec4029a"], "s:rights:c6": ["1cbdfd65c1a24b"], "s:rights:c4": ["a780d332f0cc8"], "s:rights:c10": ["7cae214f689f7"], "s:rights:c5": ["1d07141115f825"], "s:rights:c7": ["5904a0170ad0e"], "j:cases:i1": ["10311a21ca2bb8", "1d5d3c5b353799"], "j:cases:i2": ["12e0f4c91a2089"], "j:cases:i3": ["248978191f10b"], "j:cases:i4": ["1c784eec3f0c3", "58dbc80ca8df"], "j:cases:i5": ["1594311cd32a16"], "j:cases:i6": ["1d789724fc9901", "aed20b4735857"], "j:cases:i7": ["d13c7254600f3"], "j:cases:i8": ["713021ab3c1c"], "s:sharing:c8": ["f60d5e7691b07"], "s:sharing:c7": ["14900c47727053"], "s:sharing:c5": ["164efd9ec104d1"], "s:sharing:c3": ["3bb73827d3e01"], "s:sharing:c2": ["1a5797978dc516"], "s:sharing:c9": ["828a19b307407"], "s:sharing:c4": ["2dbda3d8c2c8f"], "s:sharing:c6": ["19cc447d98e7f"], "s:sharing:c1": ["191dab9510f77f"], "o:steps": ["4cb9c7eb4967d"], "c:cite": ["190d935d944e53"], "j:license:i1": ["503b43ddf24ac"], "j:license:i2": ["1d0065c47c91ea"], "j:license:i3": ["889cac3163edf"], "j:license:i4": ["1be7649dc27f0"], "j:license:i5": ["108ce9162f54df"], "j:kogl:i1": ["1882abec0e619"], "j:kogl:i2": ["2bbde6ca30225"], "j:kogl:i3": ["e91c89a6f912"], "j:kogl:i4": ["198ba94205aeee"], "j:kogl:i5": ["8bfd01733e172"], "s:protect:c1": ["2ad6b8ff39678"], "s:protect:c4": ["530297c1f6e"], "s:protect:c2": ["102f8200afabaa"], "s:protect:c3": ["1301a59cd21673"], "s:sw:c7": ["adb5282ae9f3d"], "s:sw:c2": ["2070c8ae67517"], "s:sw:c3": ["ce7fb8289c5c5"], "s:sw:c6": ["1bb6ceb98e005"], "s:sw:c1": ["c062560b6e814"], "s:sw:c4": ["5fea38f75f813"], "s:sw:c5": ["fa2ecebfd1573"], "j:ai:i1": ["16ba6f10e5b715"], "j:ai:i2": ["1ec5ec20208c90"], "j:ai:i3": ["1668cf17ea41ca", "4e9364cbdc439"], "j:ai:i4": ["2d2e65d7e162a"], "j:news:i1": ["e3d3ecf6f480f"], "j:news:i2": ["15387e17493452"], "j:news:i3": ["15db6fc6a19eac"], "j:news:i4": ["117a846c8be036"], "j:news:i5": ["113e1f82487ffe"], "j:myths:i1": ["c51e475b7325f"], "j:myths:i2": ["12c798dda4fc4d"], "j:myths:i3": ["fa5e85073000a"], "j:myths:i4": ["1618605668b1ce"], "j:myths:i5": ["140bd5f897e0a2"], "j:myths:i6": ["16442d8b2c19a9"], "j:myths:i7": ["9a08c0fc45732"], "b:k37": ["deeb719fc42a1"], "b:k38": ["75a4a44e3cd80"], "b:k39": ["75a92bf1e2454"], "b:k40": ["6567b045f5bb9"], "b:k41": ["818f66812cd93"], "b:k42": ["1eecbf7453db45"], "b:k43": ["f5ba962d42af4"], "b:k44": ["18234ff364c41b"], "b:k45": ["ae44354ba2e75"], "b:k46": ["1675bc99d45377"], "b:k47": ["a97ad14815b78"], "b:k48": ["1ef53a8482da5"], "b:k49": ["1cd17dd04e1120"], "b:k50": ["159149f398fdaf"], "b:k51": ["1cc33e53002769"], "b:k52": ["2d60ddea4d181"], "b:k53": ["1d11dc78ceda5e"], "b:k54": ["1c051d6d35ae00"], "b:k55": ["17e2e976c4efe7"], "b:k56": ["c6aecd268c9e5"], "j:rethink:i1": ["5386fec4a5ad7", "12f2702938b619"], "j:rethink:i2": ["4cd4dc3572e0b"], "j:rethink:i3": ["c32da1c48b284"], "j:rethink:i4": ["ae35b195de72", "151d6282fe0ae4"], "j:rethink:i5": ["13d804aeebf66d"]}, "minutes": 40, "coupons": 5};
+const T = D.teacher;
+const PART = D.part || 0;
+const LS = 'copymon55_v1' + (T ? '_teacher' : '_p' + PART);
+let S = {};
+try { S = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch (e) { S = {}; }
+let P1 = {};
+if (PART === 2) { try { P1 = JSON.parse(localStorage.getItem('copymon55_v1_p1') || '{}') || {}; } catch (e) { P1 = {}; }
+  ['meta:id', 'meta:name'].forEach(k => { if (!S[k] && P1[k]) S[k] = P1[k]; }); }
+const prevVal = k => S[k] || P1[k] || '';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CIRC = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮';
+const tone = o => D.tone[o] || 'neutral';
+const isSym = o => ['○','△','×','O','X'].includes(o);
+const SECS = D.sections, ROOMS = SECS.filter(s => s.kind === 'room');
+const secByKey = Object.fromEntries(SECS.map(s => [s.key, s]));
+let saveTimer = null;
+function save() { clearTimeout(saveTimer); saveTimer = setTimeout(() => { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }, 120); updateProgress(); }
+function filled(k) { const v = S[k]; return Array.isArray(v) ? v.length > 0 : (v !== undefined && v !== null && v !== '' && v !== -1); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200); }
+function today() { const d = new Date(); return `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}.`; }
+function mmss(ms) { const s = Math.max(0, Math.round(ms / 1000)); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
+
+/* ---------- 해시 ---------- */
+function cyrb53(str, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) { ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507); h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507); h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+}
+const norm = v => String(v).replace(/\s+/g, '').toLowerCase();
+const H = (key, v) => cyrb53(D.salt + '|' + key + '|' + norm(v)).toString(16);
+const correct = (k, v) => (D.hash[k] || []).includes(H(k, v));
+function unobf(b64, key) {
+  try {
+    const arr = JSON.parse(atob(b64));
+    return JSON.parse(arr.map((c, i) => String.fromCharCode(c ^ (Math.floor(cyrb53(D.salt + key + Math.floor(i / 4)) / Math.pow(2, (i % 4) * 8)) % 256))).join(''));
+  } catch (e) { return null; }
+}
+
+/* ---------- 접근 규칙 ---------- */
+const cleared = key => !!S['clr:' + key];
+const timeUp = () => !!S.go && Date.now() - S.go >= D.minutes * 60000;
+function bossWon() { return !!(S.boss && S.boss.win); }
+function access(sc) {
+  if (T) return true;
+  switch (sc.kind) {
+    case 'start': case 'lesson': case 'gate': return true;
+    case 'room': { if (!S.go) return false; if (S.all) return true; const i = ROOMS.indexOf(sc); return i === 0 || cleared(ROOMS[i - 1].key); }
+    case 'final': return !!S.go && (S.all || ROOMS.every(r => cleared(r.key)));
+    case 'boss': return !!S.go && (S.all || !!S.finalOK);
+    case 'open': case 'submit': return PART === 1 || (!!S.go && (S.all || bossWon() || timeUp()));
+  }
+  return true;
+}
+function lockReason(sc) {
+  if (!S.go) return '2차시에 선생님이 출동 열쇠를 알려 줄 때까지 잠겨 있어요';
+  if (sc.kind === 'room') return '앞 방의 자물쇠를 먼저 풀어야 해요';
+  if (sc.kind === 'final') return `방 ${ROOMS.length}개를 모두 열어야 탈출문이 나타나요`;
+  if (sc.kind === 'boss') return '탈출문을 먼저 열어야 해요';
+  return '카피몬을 물리치거나 시간이 끝나면 열려요';
+}
+
+/* ---------- 조각 ---------- */
+const isGame = sc => sc && (sc.kind === 'room' || sc.kind === 'boss');
+function blankHTML(id, chk) {
+  const m = D.blanks[id], k = 'b:' + id;
+  return `<span class="blank" style="--w:${m.w}" data-wrap="${k}"><input class="orig${chk ? '' : ' req'}" id="in_${id}" data-key="${k}"${chk ? ` data-chk="${k}"` : ''} placeholder="${esc(m.cho || '')}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="${esc(S[k] || '')}" aria-label="빈칸"><button type="button" class="tilebtn" data-blank="${id}">조각</button>${T ? `<span class="ans">${esc(m.a)}</span>` : ''}</span>`;
+}
+const withBlanks = (html, chk) => html.replace(/⟦(\w+)⟧/g, (_, id) => blankHTML(id, chk));
+function fieldHTML(k, ph, rows = 2, need) {
+  return `<div class="field${need ? ' need' : ''}"><textarea class="orig" data-key="${k}" rows="${rows}" placeholder="${esc(ph || '여기에 적어 보세요')}">${esc(S[k] || '')}</textarea></div>`;
+}
+function revBtn() { return T ? `<button class="revbtn" type="button" data-rev>정답</button>` : ''; }
+function head(b) {
+  if (!b.title && !T) return b.lead ? `<p class="bl">${b.lead}</p>` : '';
+  return `<div class="blk-head"><h2>${b.title || ''}</h2>${['info','register','free','gate','final','submit','figure'].includes(b.t) ? '' : revBtn()}</div>${b.lead ? `<p class="bl">${b.lead}</p>` : ''}`;
+}
+const LOCK_SVG = `<svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><rect x="9" y="21" width="30" height="22" rx="5" fill="#FF6F91" stroke="#2B2A33" stroke-width="2"/><path d="M15 21v-6a9 9 0 0 1 18 0v6" fill="none" stroke="#2B2A33" stroke-width="4"/><circle cx="24" cy="31" r="3.5" fill="#fff"/><rect x="22.5" y="32" width="3" height="6" rx="1.5" fill="#fff"/></svg>`;
+const OPEN_SVG = `<svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><rect x="9" y="21" width="30" height="22" rx="5" fill="#3CC48F" stroke="#2B2A33" stroke-width="2"/><path d="M15 21v-6a9 9 0 0 1 17-4" fill="none" stroke="#2B2A33" stroke-width="4" stroke-linecap="round"/><circle cx="24" cy="31" r="3.5" fill="#2B2A33"/></svg>`;
+const MON_SVG = `<svg viewBox="0 0 120 120" width="110" height="110" aria-hidden="true"><path d="M20 70 Q18 22 60 18 Q102 22 100 70 Q102 104 82 102 Q78 92 70 102 Q60 92 50 102 Q42 92 38 102 Q18 104 20 70Z" fill="#6B3FD1"/><circle cx="60" cy="62" r="24" fill="none" stroke="#fff" stroke-width="7"/><path d="M70 54 A11 11 0 1 0 70 70" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="42" cy="38" r="8" fill="#fff"/><circle cx="78" cy="38" r="8" fill="#fff"/><circle cx="44" cy="39" r="4" fill="#16213B"/><circle cx="76" cy="39" r="4" fill="#16213B"/><path d="M30 26 L42 32 M90 26 L78 32" stroke="#16213B" stroke-width="4" stroke-linecap="round"/></svg>`;
+
+/* ---------- 블록 ---------- */
+let CUR_SEC = null;
+const R = {
+  register() {
+    return `<div class="blk"><div class="reg"><div>
+      <div class="row"><label for="m_id">학번</label><input class="inp req" id="m_id" data-key="meta:id" inputmode="numeric" placeholder="예) 20801" value="${esc(S['meta:id'] || '')}" autocomplete="off"></div>
+      <div class="row"><label for="m_name">이름</label><input class="inp req" id="m_name" data-key="meta:name" placeholder="이름" value="${esc(S['meta:name'] || '')}" autocomplete="off"></div>
+      <p class="note" style="padding:0">입력한 내용은 이 기기에 자동으로 저장돼요. 각 차시 끝에 결과지를 PDF로 저장해 제출합니다.</p>
+    </div>
+    <div class="idcard" aria-live="polite"><div><div class="t1">COPYRIGHT INVESTIGATION UNIT</div><div class="t2">저작권 수사대</div></div>
+      <div><div class="nm" id="cardName">이름을 입력하세요</div><div class="no" id="cardNo">No. —</div></div>
+      <div class="seal">학습지<br>5-⑤</div></div></div></div>`;
+  },
+  figure(b) {
+    const src = b.img && D.images ? D.images[b.img] : null;
+    if (!src && !b.svg) return '';
+    return `<figure class="blk tfig${b.small ? ' small' : ''}"><span class="tlabel">교사용 그림</span>${src ? `<img src="${src}" alt="${esc(b.cap || '')}">` : `<div class="svgwrap">${b.svg}</div>`}${b.cap ? `<figcaption>${esc(b.cap)}</figcaption>` : ''}</figure>`;
+  },
+  text(b) { return `<div class="blk">${head(b)}${withBlanks(b.html, isGame(CUR_SEC))}</div>`; },
+  info(b) { return `<div class="blk info ${b.tone || ''}">${b.html}</div>`; },
+  free(b) { return `<div class="blk free"><p class="q">${esc(b.q)}</p>${fieldHTML('f:' + b.id, b.ph, b.rows)}</div>`; },
+  judge(b) {
+    const game = isGame(CUR_SEC);
+    const its = b.items.map((it, i) => {
+      const k = `j:${b.id}:${it.id}`, opts = it.opts || b.opts;
+      const prevK = b.compare ? `j:${b.compare}:${it.id}` : null, pv = prevK ? prevVal(prevK) : null;
+      return `<div class="jitem" data-item="${it.id}" data-wrap="${k}">
+        ${b.cards ? `<div class="case-no">CASE ${String(i + 1).padStart(2, '0')}</div>` : ''}
+        ${it.icon || ''}<div class="jq"><span class="num">${CIRC[i]}</span><span>${esc(it.q)}</span></div>
+        ${prevK ? (pv || T ? `<div class="prev" data-prev="${prevK}">처음 내 판단 <span class="pv ${pv ? tone(pv) : ''}">${esc(pv || '—')}</span></div>` : `<div class="prev">처음 내 판단 (1차시 결과지 보고 표시) <span class="stamps mini" data-key="${prevK}">${opts.map(o => `<button type="button" class="stamp ${tone(o)} sym" data-val="${esc(o)}">${esc(o)}</button>`).join('')}</span></div>`) : ''}
+        <div class="stamps${game ? '' : ' req'}" data-key="${k}"${game ? ` data-chk="${k}"` : ''}>${opts.map(o => `<button type="button" class="stamp ${tone(o)}${isSym(o) ? ' sym' : ''}${S[k] === o ? ' on' : ''}" data-val="${esc(o)}" aria-pressed="${S[k] === o}">${esc(o)}</button>`).join('')}</div>
+        ${b.reason ? fieldHTML(`jr:${b.id}:${it.id}`, b.reason, 2, b.need) : ''}
+        ${it.rec ? `<div class="rec" data-rec="${k}"></div>` : ''}
+        ${T ? `<div class="ansbox"><b>정답 ${esc(it.a)}</b><br>${esc(it.why)}</div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="blk judge" data-bid="${b.id}">${head(b)}<div class="jitems${b.cards ? ' cards' : ''}">${its}</div></div>`;
+  },
+  sort(b) {
+    const game = isGame(CUR_SEC);
+    const cards = b.items.map(it => `<button type="button" class="card${game ? '' : ' req'}" data-key="s:${b.id}:${it.id}"${game ? ` data-chk="s:${b.id}:${it.id}"` : ''} data-wrap="s:${b.id}:${it.id}" data-item="${it.id}">${esc(it.label)}${it.sub ? `<small>${esc(it.sub)}</small>` : ''}${T ? `<span class="ans">→ ${esc(b.bins[it.a].name)}</span>` : ''}</button>`).join('');
+    const bins = b.bins.map((bn, i) => `<div class="bin" data-bin="${i}"><div class="binhead">${esc(bn.name)}${bn.desc ? `<small>${esc(bn.desc)}</small>` : ''}</div><div class="binbody"></div></div>`).join('');
+    return `<div class="blk sort" data-bid="${b.id}">${head(b)}<div class="pool">${cards}</div><div class="bins">${bins}</div></div>`;
+  },
+  order(b) {
+    const ids = validOrder(b), map = Object.fromEntries(b.items.map(it => [it.id, it]));
+    const rows = ids.map(id => `<div class="orow" data-id="${id}"><div class="rk"><span><span class="rkn"></span><small>단계</small></span></div><div class="ob"><p class="def" style="font-weight:600">${esc(map[id].html)}</p></div><div class="omv"><button type="button" data-mv="-1" aria-label="위로">▲</button><button type="button" data-mv="1" aria-label="아래로">▼</button></div></div>`).join('');
+    const ans = T ? `<div class="ansbox"><b>올바른 순서</b><br>${b.answerIds.map((id, i) => `${i + 1}단계 ${esc(map[id].html)}`).join('<br>')}</div>` : '';
+    return `<div class="blk order" data-bid="${b.id}">${head(b)}<div class="olist" data-chk="o:${b.id}" data-wrap="o:${b.id}">${rows}</div>${ans}</div>`;
+  },
+  cite(b) {
+    const ans = T ? `<div class="ansbox"><b>정답</b> ${b.answer.map(id => esc(tokLabel(b, id))).join(', ')}</div>` : '';
+    return `<div class="blk cite" data-bid="${b.id}">${head(b)}
+      <div class="photo"><div class="img" role="img" aria-label="노을 지는 운동장 사진"></div>
+      <div class="meta"><b>사진 정보</b><br>만든 사람: 김하늘<br>제목: 노을 지는 운동장<br>가져온 곳: 공유마당 (https://gongu.copyright.or.kr/…)<br>좋아요 238개 · 파일 크기 3.2MB<br>오늘 날짜: ${today()}</div></div>
+      <div class="citeline" data-key="c:${b.id}" data-chk="c:${b.id}" data-wrap="c:${b.id}"></div>
+      <div style="display:flex;gap:8px;margin-bottom:10px"><button type="button" class="mini" data-citeclear>처음부터 다시</button></div>
+      <div class="tokpool"></div>${ans}</div>`;
+  },
+  boss(b) {
+    const its = b.items.map((it, i) => `<div class="bq" data-q="${it.id}"><span class="num">${i + 1}.</span><p class="def">${withBlanks(it.html, true)}</p><span class="mark"></span></div>`).join('');
+    return `<div class="blk boss" data-bid="${b.id}">
+      <div class="boss-top"><div class="mon" id="mon">${MON_SVG}</div>
+      <div class="gauges"><div class="gauge hp"><div class="lab"><span>카피몬 체력</span><span id="hpT"></span></div><div class="trk"><i id="hpB"></i></div></div>
+      <div class="gauge en"><div class="lab"><span>공격 에너지 (채운 빈칸)</span><span id="enT"></span></div><div class="trk"><i id="enB"></i></div></div>
+      <div class="bossmsg" id="bossMsg"></div></div></div>
+      <div class="attack"><button class="big" type="button" id="atk">공격!</button><span class="coup" id="atkInfo"></span>${revBtn()}</div>
+      ${its}
+      <div class="attack"><button class="big" type="button" data-atk2>공격!</button></div></div>`;
+  },
+  gate() {
+    return `<div class="blk"><div class="gatebox">
+      <div class="door"><div class="big-ic">${LOCK_SVG}</div><div><div class="dt" id="gateT"></div><div class="ds" id="gateS"></div></div></div>
+      <div class="keyrow"><input class="keyin" id="gIn" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="····" aria-label="열쇠 번호"><button class="big" type="button" id="gGo">열쇠 넣기</button></div>
+      <p class="keymsg" id="gMsg"></p>
+      <ul class="note" style="margin:0;padding-left:1.2em">
+        <li>방은 순서대로 열려요. 자물쇠를 풀면 다음 방 문과 글자 조각 하나를 얻어요.</li>
+        <li>모든 칸을 채워야 자물쇠를 돌릴 수 있어요. 틀리면 자물쇠가 8초 동안 잠겨요.</li>
+        <li>2차시 <b>조각 힌트</b>는 쿠폰 ${D.coupons}장! 꼭 필요할 때만 쓰세요.</li>
+        <li>방을 열면 <b>수사 기록</b>에 정답 해설이 나타나요. 꼭 읽어 보세요.</li>
+      </ul></div></div>`;
+  },
+  final() {
+    return `<div class="blk" id="finalBlk"><h2>모은 글자 조각</h2><p class="bl">글자를 눌러 칸에 순서대로 넣어요. 칸에 넣은 글자를 누르면 빠져요.</p>
+      <div class="slots" id="slots"></div><div class="ltiles" id="ltiles"></div>
+      <div class="attack"><button class="big" type="button" id="fGo">문 열기</button><span class="keymsg" id="fMsg"></span></div>
+      ${T ? `<div class="ansbox" style="display:block"><b>정답</b> ${esc(D.phrase)}</div>` : ''}</div>`;
+  },
+  submit() {
+    const doc = PART === 1 ? '교육 노트' : '탈출 보고서';
+    return `<div class="blk"><h2>${PART === 1 ? '교육 기록' : '탈출 기록'}</h2><ul class="checklist" id="checklist"></ul>
+      <button class="big" type="button" id="mk">${doc} 만들기</button>
+      <p class="note" style="padding:0;margin-top:12px">${doc}에서 <b>PDF 저장</b>을 누르면 “학번_이름_저작권보호${PART ? '_' + PART + '차시' : ''}.pdf” 파일이 내려받아져요. 구글 클래스룸 과제에 첨부해 제출하세요.</p>
+      <div class="reset"><button type="button" id="resetBtn">모든 기록 지우고 처음부터</button> <span id="resetMsg"></span></div></div>`;
+  },
+};
+function lockPanel(sc) {
+  return `<div class="lockp" id="lock_${sc.key}" data-sec="${sc.key}"><div class="lk-ic">${LOCK_SVG}</div>
+    <div class="lk-body"><div class="lk-t">${esc(sc.lock)}</div><span class="lk-st" id="lkst_${sc.key}">모든 칸을 채우고 자물쇠를 돌려요</span><div class="lk-meta" id="lkm_${sc.key}"></div></div>
+    <button type="button" class="lk-btn" data-lock="${sc.key}">자물쇠 돌리기</button></div>`;
+}
+function tokLabel(b, id) { const t = b.tokens.find(x => x.id === id); return t ? t.label.replace('@DATE@', today()) : ''; }
+function validOrder(b) { const ids = b.items.map(x => x.id), st = S['o:' + b.id]; return (Array.isArray(st) && st.length === ids.length && ids.every(i => st.includes(i))) ? st : ids; }
+
+const BLK = {};
+function render() {
+  $('#main').innerHTML = SECS.map((sc, si) => {
+    CUR_SEC = sc;
+    sc.blocks.forEach(b => { if (b.id) BLK[b.id] = b; });
+    const n = sc.kind === 'room' ? ROOMS.indexOf(sc) + 1 : 0;
+    const eyebrow = sc.kind === 'room' ? `<span>방 ${n} / ${ROOMS.length}</span><span>${esc(sc.lock)}</span>` :
+      sc.kind === 'lesson' ? `<span>수사관 교육</span><span>1차시 · 선생님과 함께</span>` :
+      `<span>${sc.period}차시</span>`;
+    const qable = ['lesson', 'room', 'boss', 'final'].includes(sc.kind);
+    return `<section class="sec${cleared(sc.key) ? ' cleared' : ''}" id="sec${si}" data-si="${si}" data-key="${sc.key}" style="--tint:var(--t${si % 6})" hidden>
+      <div class="eyebrow">${eyebrow}</div>
+      <div class="sec-head"><h1 class="st">${esc(sc.title)}</h1>${qable ? `<button type="button" class="qbtn${S['qa:' + sc.key] ? ' on' : ''}" data-q="${sc.key}">질문 있어요</button>` : ''}</div>
+      ${qable ? `<div class="qbox" id="qb_${sc.key}"${S['qa:' + sc.key] ? '' : ' hidden'}>${fieldHTML('qa:' + sc.key, '궁금한 점을 적고 손을 들어 선생님을 불러요. 적은 질문은 보고서에도 남아요.', 2)}</div>` : ''}
+      <p class="lead">${sc.lead}</p>
+      ${sc.blocks.map(b => R[b.t](b)).join('')}
+      ${sc.kind === 'room' ? lockPanel(sc) : ''}</section>`;
+  }).join('');
+  CUR_SEC = null;
+  let lastP = 0;
+  $('#rail').innerHTML = SECS.map((sc, si) => {
+    const tag = sc.period !== lastP ? `<span class="period-tag">${sc.period}차시</span>` : ''; lastP = sc.period;
+    return `${tag}<button type="button" class="chip${sc.period === 2 ? ' zone2' : ''}" data-go="${si}"><span class="n">${si}</span>${esc(sc.short)}<span class="lk"></span></button>`;
+  }).join('');
+  $$('.sort').forEach(el => layoutSort(el.dataset.bid));
+  $$('.order').forEach(el => numberOrder(el));
+  $$('.cite').forEach(el => layoutCite(el.dataset.bid));
+  ROOMS.forEach(r => paintLock(r.key));
+  updateCard(); bossPaint(); paintGate(); paintFinal();
+}
+
+/* ---------- 이동 ---------- */
+let cur = Math.min(+(S._cur || 0), SECS.length - 1);
+if (!access(SECS[cur])) cur = 0;
+function go(i) {
+  i = Math.max(0, Math.min(SECS.length - 1, i));
+  if (!access(SECS[i])) { toast(lockReason(SECS[i])); return; }
+  cur = i;
+  setTheme(SECS[cur]);
+  $$('.sec').forEach(s => s.hidden = +s.dataset.si !== cur);
+  paintNav();
+  const chip = $(`.chip[data-go="${cur}"]`); chip && chip.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  $('#mid').textContent = `${cur} · ${SECS[cur].short}`;
+  S._cur = cur; save();
+  window.scrollTo(0, 0);
+  if (SECS[cur].kind === 'submit') buildChecklist();
+  if (SECS[cur].kind === 'final') paintFinal();
+}
+function setTheme(sc) {
+  const esc2 = PART === 2 || (PART === 0 && sc.period === 2);
+  document.body.classList.toggle('t-escape', esc2); document.body.classList.toggle('t-lesson', !esc2);
+  $('#brandTxt').textContent = esc2 ? '카피몬을 막아라' : '저작권 보호 · 수사관 교육';
+}
+function paintNav() {
+  $$('.chip').forEach(c => {
+    const sc = SECS[+c.dataset.go], ok = access(sc);
+    c.classList.toggle('cur', +c.dataset.go === cur); c.classList.toggle('locked', !ok);
+    $('.lk', c).textContent = ok ? '' : '🔒';
+  });
+  $('#prev').disabled = cur === 0;
+  const nx = SECS[cur + 1];
+  $('#next').disabled = !nx || !access(nx);
+  $('#next').textContent = !nx ? '끝' : access(nx) ? '다음 ▶' : '잠김 🔒';
+}
+$('#prev').onclick = () => go(cur - 1);
+$('#next').onclick = () => go(cur + 1);
+
+/* ---------- 진행률 ---------- */
+function secStats(si) {
+  const sc = SECS[si], el = $('#sec' + si); if (!el) return [0, 0];
+  if (sc.kind === 'room') return [cleared(sc.key) ? 1 : 0, 1];
+  if (sc.kind === 'boss') return [bossWon() ? 1 : 0, 1];
+  if (sc.kind === 'final') return [S.finalOK ? 1 : 0, 1];
+  const keys = $$('.req', el).map(x => x.dataset.key);
+  return [keys.filter(filled).length, keys.length];
+}
+function updateProgress() {
+  let a = 0, t = 0;
+  SECS.forEach((sc, si) => {
+    const [d, n] = secStats(si); a += n ? d / n : 0; t += n ? 1 : 0;
+    const c = $(`.chip[data-go="${si}"]`); c && c.classList.toggle('done', n > 0 && d === n);
+  });
+  $('#bar').style.width = (t ? a / t * 100 : 0) + '%';
+}
+function updateCard() {
+  const id = S['meta:id'] || '', nm = S['meta:name'] || '';
+  $('#who').textContent = nm ? `${id} ${nm} 수사관` : '수사관 미등록';
+  const cn = $('#cardName'), cno = $('#cardNo');
+  if (cn) cn.textContent = nm || '이름을 입력하세요';
+  if (cno) cno.textContent = 'No. ' + (id || '—');
+}
+function paintHeader() {
+  const cp = $('#coupon'), tm = $('#timer');
+  if (S.go && !T) {
+    cp.hidden = false; const left = D.coupons - (S.coupon || 0); cp.textContent = `쿠폰 ${left}`; cp.className = 'hchip' + (left <= 1 ? ' warn' : '');
+    tm.hidden = false;
+    if (bossWon()) { tm.textContent = `탈출 ${mmss(S.boss.win - S.go)}`; tm.className = 'hchip'; }
+    else { const rem = D.minutes * 60000 - (Date.now() - S.go); if (rem <= 0 && !S.tuShown) { S.tuShown = 1; save(); paintNav(); toast('시간 종료! 다시 생각해보기와 탈출 보고서가 열렸어요'); } tm.textContent = rem > 0 ? `남은 시간 ${mmss(rem)}` : '시간 종료'; tm.className = 'hchip' + (rem <= 0 ? ' over' : rem < 5 * 60000 ? ' warn' : ''); }
+  } else { cp.hidden = true; tm.hidden = true; }
+}
+setInterval(paintHeader, 1000);
+
+/* ---------- 입력 ---------- */
+document.addEventListener('input', e => {
+  const k = e.target.dataset.key; if (!k) return;
+  S[k] = e.target.value;
+  if (k.startsWith('meta:')) updateCard();
+  const w = e.target.closest('[data-wrap]'); w && w.classList.remove('ok', 'bad');
+  if (e.target.closest('.boss')) bossPaint();
+  save();
+});
+document.addEventListener('click', e => {
+  const t = e.target;
+  const g = t.closest('[data-go]'); if (g) { go(+g.dataset.go); return; }
+  const rv = t.closest('[data-rev]'); if (rv) { const b = rv.closest('.blk'); b.classList.toggle('reveal'); rv.textContent = b.classList.contains('reveal') ? '정답 숨기기' : '정답'; return; }
+  const q = t.closest('.qbtn'); if (q) { const box = $('#qb_' + q.dataset.q); box.hidden = !box.hidden; q.classList.toggle('on', !box.hidden || !!S['qa:' + q.dataset.q]); if (!box.hidden) $('textarea', box).focus(); return; }
+  const st = t.closest('.stamp'); if (st) { stampClick(st); return; }
+  const tb = t.closest('.tilebtn'); if (tb) { openTiles(tb.dataset.blank); return; }
+  const mv = t.closest('[data-mv]'); if (mv) { moveRow(mv.closest('.orow'), +mv.dataset.mv); return; }
+  const tok = t.closest('.tok'); if (tok) { citeClick(tok); return; }
+  const cc = t.closest('[data-citeclear]'); if (cc) { const bid = cc.closest('.cite').dataset.bid; S['c:' + bid] = []; layoutCite(bid); unmark('c:' + bid); save(); return; }
+  const lk = t.closest('[data-lock]'); if (lk) { tryLock(lk.dataset.lock, lk); return; }
+  const nx = t.closest('[data-nextroom]'); if (nx) { go(cur + 1); return; }
+  if (t.id === 'atk' || t.closest('[data-atk2]')) { attack(); return; }
+  const lt = t.closest('.ltile'); if (lt && !lt.classList.contains('miss')) { finalPick(+lt.dataset.i); return; }
+  const sl = t.closest('.slot.f'); if (sl) { finalRemove(+sl.dataset.i); return; }
+  if (t.id === 'fGo') { finalTry(); return; }
+  if (t.id === 'gGo') { useKey($('#gIn').value, $('#gMsg')); return; }
+  if (t.closest('.sort')) { sortClick(e); return; }
+  if (t.id === 'mk') { openReport(); return; }
+  if (t.id === 'resetBtn') { resetAsk(); return; }
+});
+function unmark(k) { $$(`[data-wrap="${k}"]`).forEach(w => w.classList.remove('ok', 'bad')); }
+function stampClick(st) {
+  const gEl = st.parentElement, k = gEl.dataset.key, v = st.dataset.val;
+  S[k] = S[k] === v ? '' : v;
+  $$('.stamp', gEl).forEach(b => { b.classList.toggle('on', S[k] === b.dataset.val); b.setAttribute('aria-pressed', S[k] === b.dataset.val); });
+  $$(`[data-prev="${k}"] .pv`).forEach(p => { p.textContent = S[k] || '—'; p.className = 'pv ' + (S[k] ? tone(S[k]) : ''); });
+  unmark(k); save();
+}
+if (T) {
+  $('#tflag').hidden = false;
+  $('#tflag').innerHTML = `교사용 · 출동 열쇠 <b>${D.keys.go}</b> 정리 열쇠(모든 방 열기) <b>${D.keys.all}</b> · 학생에게는 학생용 파일을 배포하세요`;
+  $('#revealAll').hidden = false;
+  $('#revealAll').onclick = e => { const on = !document.body.classList.contains('revealall'); document.body.classList.toggle('revealall', on); e.currentTarget.setAttribute('aria-pressed', on); };
+}
+
+/* ---------- 열쇠 ---------- */
+$('#keyBtn').onclick = () => { $('#ksheet').classList.add('open'); $('#kMsg').textContent = ''; $('#kIn').value = ''; setTimeout(() => $('#kIn').focus(), 200); };
+$('#kClose').onclick = () => $('#ksheet').classList.remove('open');
+$('#kGo').onclick = () => useKey($('#kIn').value, $('#kMsg'));
+function useKey(v, msgEl) {
+  v = String(v || '').trim(); msgEl.className = 'keymsg';
+  if ((D.hash['key:go'] || []).includes(H('key', v))) {
+    if (!S.go) { S.go = Date.now(); msgEl.textContent = `출동! 방탈출이 시작됐어요. ${D.minutes}분 안에 탈출하세요!`; msgEl.classList.add('good'); }
+    else { msgEl.textContent = '이미 출동했어요.'; msgEl.classList.add('good'); }
+    save(); afterKey(); setTimeout(() => { $('#ksheet').classList.remove('open'); go(SECS.indexOf(ROOMS[0])); }, 900); return;
+  }
+  if ((D.hash['key:all'] || []).includes(H('key', v))) {
+    if (!S.go) S.go = Date.now();
+    S.all = true;
+    ROOMS.forEach(r => { if (!cleared(r.key)) S['clr:' + r.key] = { how: 'key', t: Date.now() }; });
+    msgEl.textContent = '정리 열쇠! 모든 방이 열렸어요. 선생님과 함께 확인해요.'; msgEl.classList.add('good');
+    save(); afterKey(); ROOMS.forEach(r => { paintLock(r.key); revealRec(r.key); }); return;
+  }
+  msgEl.textContent = '맞지 않는 열쇠예요. 번호를 다시 확인하세요.'; msgEl.classList.add('bad');
+}
+function afterKey() { paintNav(); paintGate(); paintHeader(); paintFinal(); updateProgress(); }
+function paintGate() {
+  const t = $('#gateT'), s = $('#gateS'); if (!t) return;
+  if (T) { t.textContent = `출동 열쇠 ${D.keys.go} · 정리 열쇠 ${D.keys.all}`; s.textContent = `2차시 시작 때 출동 열쇠를 불러 주세요. 정리 열쇠는 필요할 때만(모든 방을 열고 보고서에 정답을 띄울 때) 쓰세요.`; return; }
+  if (!S.go) { t.textContent = '출동 대기 중'; s.textContent = '선생님이 출동 열쇠를 알려 줄 때까지 기다려요.'; }
+  else if (S.all) { t.textContent = '모든 방 개방'; s.textContent = '선생님과 함께 정답을 확인하고 보고서를 제출해요.'; }
+  else { t.textContent = '출동 완료!'; s.textContent = '방 1부터 차례로 자물쇠를 풀어요.'; }
+}
+
+/* ---------- 조각 (힌트) ---------- */
+let tileTarget = null;
+function secOfEl(el) { const s = el.closest('.sec'); return s ? SECS[+s.dataset.si] : null; }
+function openTiles(id) {
+  const inp = $('#in_' + id), sc = secOfEl(inp), m = D.blanks[id];
+  if (isGame(sc) && !T) {
+    if (!S['tc:' + id]) {
+      if ((S.coupon || 0) >= D.coupons) { toast('조각 쿠폰을 모두 썼어요! 1차시에 배운 내용을 떠올려 보세요'); return; }
+      S.coupon = (S.coupon || 0) + 1; S['tc:' + id] = 1; paintHeader();
+      toast(`쿠폰 1장 사용 · 남은 쿠폰 ${D.coupons - S.coupon}장`);
+    }
+  } else { S.hintFree = (S.hintFree || 0) + 1; }
+  tileTarget = id;
+  inp.value = ''; S['b:' + id] = ''; unmark('b:' + id); save();
+  $('#tiles').innerHTML = m.tiles.map((c, i) => `<button type="button" class="tile" data-ti="${i}">${esc(c)}</button>`).join('') + `<button type="button" class="tile" data-ti="sp" style="width:auto;padding:0 12px;font-size:15px">띄어쓰기</button>`;
+  $('#tPrev').textContent = ''; $('#sheet').classList.add('open');
+}
+$('#tiles').addEventListener('click', e => {
+  const b = e.target.closest('.tile'); if (!b || !tileTarget) return;
+  const inp = $('#in_' + tileTarget);
+  inp.value += b.dataset.ti === 'sp' ? ' ' : b.textContent;
+  if (b.dataset.ti !== 'sp') b.disabled = true;
+  S['b:' + tileTarget] = inp.value; $('#tPrev').textContent = inp.value; save();
+  if (inp.closest('.boss')) bossPaint();
+  if ($$('.tile:not([disabled])', $('#tiles')).length === 1) setTimeout(closeTiles, 350);
+});
+$('#tClear').onclick = () => { if (!tileTarget) return; const id = tileTarget; const inp = $('#in_' + id); inp.value = ''; S['b:' + id] = ''; save(); $$('.tile', $('#tiles')).forEach(t => t.disabled = false); $('#tPrev').textContent = ''; };
+function closeTiles() { $('#sheet').classList.remove('open'); tileTarget = null; }
+$('#tClose').onclick = closeTiles;
+
+/* ---------- 분류 ---------- */
+let sel = null, drag = null, suppress = false;
+function layoutSort(bid) {
+  const el = $(`.sort[data-bid="${bid}"]`), pool = $('.pool', el), bins = $$('.binbody', el);
+  $$('.card', el).forEach(c => { const v = S[c.dataset.key]; (v === undefined || v === null || v === -1 ? pool : bins[v]).appendChild(c); });
+}
+function place(bid, card, bin) { const k = card.dataset.key; S[k] = bin === null ? -1 : bin; card.classList.remove('ok', 'bad'); layoutSort(bid); save(); }
+function clearSel() { if (sel) { sel.classList.remove('sel'); sel.closest('.sort').classList.remove('selecting'); } sel = null; }
+function sortClick(e) {
+  if (suppress) { suppress = false; return; }
+  const blk = e.target.closest('.sort'), bid = blk.dataset.bid;
+  const card = e.target.closest('.card'), bin = e.target.closest('.bin'), pool = e.target.closest('.pool');
+  if (card) {
+    if (sel === card) { clearSel(); return; }
+    if (sel && sel.closest('.sort') === blk && bin && !card.closest('.pool')) { const c = sel; clearSel(); place(bid, c, +bin.dataset.bin); return; }
+    clearSel(); sel = card; card.classList.add('sel'); blk.classList.add('selecting'); return;
+  }
+  if (sel && sel.closest('.sort') === blk) { const c = sel; clearSel(); if (bin) place(bid, c, +bin.dataset.bin); else if (pool) place(bid, c, null); }
+}
+document.addEventListener('pointerdown', e => { const c = e.target.closest('.sort .card'); if (!c || e.button > 0) return; drag = { c, x: e.clientX, y: e.clientY, on: false, g: null }; });
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.on && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 8) {
+    drag.on = true; clearSel();
+    const r = drag.c.getBoundingClientRect();
+    drag.g = drag.c.cloneNode(true); drag.g.classList.add('ghost'); drag.g.style.width = r.width + 'px';
+    drag.ox = e.clientX - r.left; drag.oy = e.clientY - r.top;
+    document.body.appendChild(drag.g); drag.c.classList.add('dragging');
+  }
+  if (drag.on) {
+    e.preventDefault();
+    drag.g.style.transform = `translate(${e.clientX - drag.ox}px,${e.clientY - drag.oy}px) rotate(-3deg)`;
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    $$('.bin.over').forEach(b => b.classList.remove('over'));
+    const bin = under && under.closest('.bin'); if (bin && drag.c.closest('.sort').contains(bin)) bin.classList.add('over');
+    if (e.clientY > innerHeight - 110) scrollBy(0, 12); else if (e.clientY < 150) scrollBy(0, -12);
+  }
+}, { passive: false });
+function endDrag(e, cancel) {
+  if (!drag) return;
+  if (drag.on) {
+    drag.g.remove(); drag.c.classList.remove('dragging'); $$('.bin.over').forEach(b => b.classList.remove('over'));
+    if (!cancel) {
+      const under = document.elementFromPoint(e.clientX, e.clientY), blk = drag.c.closest('.sort');
+      const bin = under && under.closest('.bin'), pool = under && under.closest('.pool');
+      if (bin && blk.contains(bin)) place(blk.dataset.bid, drag.c, +bin.dataset.bin);
+      else if (pool && blk.contains(pool)) place(blk.dataset.bid, drag.c, null);
+    }
+    suppress = true; setTimeout(() => suppress = false, 50);
+  }
+  drag = null;
+}
+document.addEventListener('pointerup', e => endDrag(e, false));
+document.addEventListener('pointercancel', e => endDrag(e, true));
+
+/* ---------- 순서 / 출처 ---------- */
+function numberOrder(el) { $$('.orow', el).forEach((r, i, a) => { $('.rkn', r).textContent = i + 1; $('[data-mv="-1"]', r).disabled = i === 0; $('[data-mv="1"]', r).disabled = i === a.length - 1; }); }
+function moveRow(row, d) {
+  const list = row.parentElement;
+  if (d < 0 && row.previousElementSibling) list.insertBefore(row, row.previousElementSibling);
+  else if (d > 0 && row.nextElementSibling) list.insertBefore(row.nextElementSibling, row);
+  const el = row.closest('.order'); numberOrder(el);
+  S['o:' + el.dataset.bid] = $$('.orow', el).map(r => r.dataset.id); unmark('o:' + el.dataset.bid);
+  row.animate && row.animate([{ background: '#FFF6D6' }, { background: '#FCFDFF' }], { duration: 500 });
+  save();
+}
+function layoutCite(bid) {
+  const b = BLK[bid], el = $(`.cite[data-bid="${bid}"]`), seq = S['c:' + bid] || [];
+  $('.citeline', el).innerHTML = seq.map(id => `<button type="button" class="tok" data-tok="${id}" data-in="1">${esc(tokLabel(b, id))}</button>`).join('');
+  $('.tokpool', el).innerHTML = b.tokens.map(t => `<button type="button" class="tok" data-tok="${t.id}"${seq.includes(t.id) ? ' disabled' : ''}>${esc(tokLabel(b, t.id))}</button>`).join('');
+}
+function citeClick(tok) {
+  const bid = tok.closest('.cite').dataset.bid, seq = (S['c:' + bid] || []).slice(), id = tok.dataset.tok;
+  if (tok.dataset.in) seq.splice(seq.indexOf(id), 1); else if (!seq.includes(id)) seq.push(id);
+  S['c:' + bid] = seq; layoutCite(bid); unmark('c:' + bid); save();
+}
+
+/* ---------- 자물쇠 ---------- */
+function fieldValue(k) {
+  if (k.startsWith('o:')) return validOrder(BLK[k.slice(2)]).join(',');
+  if (k.startsWith('c:')) return (S[k] || []).join(',');
+  const v = S[k]; return v === undefined || v === null || v === -1 ? '' : String(v);
+}
+function displayValue(k) {
+  if (k.startsWith('o:')) { const b = BLK[k.slice(2)], map = Object.fromEntries(b.items.map(i => [i.id, i.html])); return validOrder(b).map((id, i) => `${i + 1}:${map[id].slice(0, 10)}…`).join(' / '); }
+  if (k.startsWith('c:')) { const b = BLK[k.slice(2)]; return (S[k] || []).map(id => tokLabel(b, id)).join(', '); }
+  if (k.startsWith('s:')) { const [, bid] = k.split(':'); const v = S[k]; return v === undefined || v === -1 ? '' : BLK[bid].bins[v].name; }
+  return S[k] || '';
+}
+const cool = {};
+function paintLock(key) {
+  const p = $('#lock_' + key); if (!p) return;
+  const sc = secByKey[key], c = S['clr:' + key], att = S['att:' + key] || 0;
+  $('#lkm_' + key).textContent = att ? `시도 ${att}회` : '';
+  const btn = $('.lk-btn', p);
+  if (c) {
+    p.classList.add('open'); $('.lk-ic', p).innerHTML = OPEN_SVG;
+    $('#lkst_' + key).innerHTML = (c.how === 'key' ? '선생님 열쇠로 열렸어요.' : '자물쇠가 열렸어요!') + ` 글자 조각 <span class="gotletter">${esc(sc.letter)}</span>`;
+    btn.textContent = ROOMS.indexOf(sc) === ROOMS.length - 1 ? '탈출문으로 ▶' : '다음 방으로 ▶'; btn.removeAttribute('data-lock'); btn.setAttribute('data-nextroom', '1'); btn.disabled = false;
+    $('#sec' + SECS.indexOf(sc)).classList.add('cleared');
+  }
+}
+function revealRec(key) {
+  const el = $('#sec' + SECS.indexOf(secByKey[key]));
+  $$('[data-rec]', el).forEach(r => {
+    const k = r.dataset.rec, it = BLK[k.split(':')[1]].items.find(x => x.id === k.split(':')[2]);
+    const d = it && it.rec ? unobf(it.rec, k) : null;
+    if (d) r.innerHTML = `<b>수사 기록 · 정답 ${esc(d.a)}</b><br>${esc(d.why)}`;
+  });
+}
+function tryLock(key, btn) {
+  if (cool[key] && Date.now() < cool[key]) return;
+  const el = $('#sec' + SECS.indexOf(secByKey[key]));
+  const keys = $$('[data-chk]', el).map(x => x.dataset.chk);
+  const empty = keys.filter(k => !fieldValue(k));
+  const st = $('#lkst_' + key);
+  if (empty.length) { st.textContent = `아직 비어 있는 칸이나 카드가 ${empty.length}개 있어요. 모두 채워야 자물쇠가 돌아가요.`; empty.forEach(k => $$(`[data-wrap="${k}"]`).forEach(w => w.classList.add('bad'))); return; }
+  const needEmpty = $$('.field.need textarea', el).filter(t => !t.value.trim()).length;
+  if (needEmpty) { st.textContent = `판정 이유를 모두 써야 자물쇠가 돌아가요. (${needEmpty}칸 남음)`; return; }
+  S['att:' + key] = (S['att:' + key] || 0) + 1;
+  let ok = 0;
+  keys.forEach(k => {
+    const good = correct(k, fieldValue(k));
+    if (good) ok++; else if (S['w:' + k] === undefined) S['w:' + k] = displayValue(k);
+    $$(`[data-wrap="${k}"]`).forEach(w => { w.classList.toggle('ok', good); w.classList.toggle('bad', !good); });
+  });
+  if (ok === keys.length) {
+    S['clr:' + key] = { how: 'self', t: Date.now() };
+    paintLock(key); revealRec(key); paintNav(); save();
+    toast(`자물쇠 해제! 글자 조각 '${secByKey[key].letter}' 획득`);
+    return;
+  }
+  const p = $('#lock_' + key); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake');
+  st.textContent = `철컥… 안 열려요! ${keys.length}개 중 ${ok}개가 맞았어요. 빨간 표시를 다시 살펴보세요.`;
+  $('#lkm_' + key).textContent = `시도 ${S['att:' + key]}회`;
+  cool[key] = Date.now() + 8000;
+  const tick = () => { const r = Math.ceil((cool[key] - Date.now()) / 1000); if (r > 0) { btn.disabled = true; btn.textContent = `다시 잠김 ${r}`; setTimeout(tick, 250); } else { btn.disabled = false; btn.textContent = '자물쇠 돌리기'; } };
+  tick(); save();
+}
+
+/* ---------- 탈출문 ---------- */
+function letters() { return ROOMS.map((r, i) => ({ i, ch: r.letter, have: cleared(r.key) })); }
+function paintFinal() {
+  const slots = $('#slots'); if (!slots) return;
+  const L = letters(), seq = S.finalSeq || [];
+  slots.innerHTML = L.map((_, j) => seq[j] !== undefined ? `<button type="button" class="slot f" data-i="${j}">${esc(L[seq[j]].ch)}</button>` : `<span class="slot"></span>`).join('');
+  $('#ltiles').innerHTML = L.map(l => l.have ? `<button type="button" class="ltile" data-i="${l.i}"${seq.includes(l.i) ? ' disabled' : ''}>${esc(l.ch)}</button>` : `<span class="ltile miss" data-i="${l.i}">방 ${l.i + 1}</span>`).join('');
+  if (S.finalOK) { $('#fMsg').innerHTML = '<span class="final-ok">문이 열렸어요! 카피몬에게 가세요 ▶</span>'; $('#fGo').textContent = '보스전으로 ▶'; }
+}
+function finalPick(i) { const seq = (S.finalSeq || []).slice(); if (!seq.includes(i)) seq.push(i); S.finalSeq = seq; paintFinal(); save(); }
+function finalRemove(j) { const seq = (S.finalSeq || []).slice(); seq.splice(j, 1); S.finalSeq = seq; paintFinal(); save(); }
+function finalTry() {
+  if (S.finalOK) { go(SECS.findIndex(s => s.kind === 'boss')); return; }
+  const L = letters(), seq = S.finalSeq || [];
+  if (seq.length < L.length) { $('#fMsg').textContent = '글자 칸을 모두 채워야 해요.'; $('#fMsg').className = 'keymsg bad'; return; }
+  S.finalAtt = (S.finalAtt || 0) + 1;
+  if ((D.hash.final || []).includes(H('final', seq.map(i => L[i].ch).join('')))) { S.finalOK = Date.now(); paintFinal(); paintNav(); save(); toast('방송실 문이 열렸어요!'); }
+  else { $('#fMsg').textContent = '문이 꿈쩍도 안 해요. 오늘 배운 핵심 문장을 떠올려 보세요!'; $('#fMsg').className = 'keymsg bad'; save(); }
+}
+
+/* ---------- 보스 ---------- */
+let atkCool = 0;
+function bossItems() { const b = $('.boss'); return b ? BLK[b.dataset.bid].items : []; }
+function bossPaint() {
+  const el = $('.boss'); if (!el) return;
+  const items = bossItems(), hits = (S.boss && S.boss.hits) || [], hp = items.length - hits.length;
+  const ins = $$('input.orig', el), fl = ins.filter(i => i.value.trim()).length;
+  $('#hpT').textContent = `${hp} / ${items.length}`; $('#hpB').style.width = hp / items.length * 100 + '%';
+  $('#enT').textContent = `${fl} / ${ins.length}`; $('#enB').style.width = fl / ins.length * 100 + '%';
+  $('#mon').classList.toggle('dead', hp === 0);
+  $('#bossMsg').innerHTML = hp === 0 ? '<span class="win">카피몬 퇴치! 탈출 성공!</span>' : (S.boss && S.boss.n) ? `${hits.length}문장 명중! 빨간 문장을 고쳐서 다시 공격하세요.` : '빈칸을 채우고 공격! 버튼을 눌러요.';
+  $('#atkInfo').textContent = S.boss && S.boss.n ? `공격 ${S.boss.n}회` : '';
+  items.forEach(it => { const q = $(`.bq[data-q="${it.id}"]`, el); const h = hits.includes(it.id); q.classList.toggle('ok', h); $('.mark', q).textContent = h ? '✔' : q.classList.contains('bad') ? '✖' : ''; });
+}
+function attack() {
+  if (Date.now() < atkCool) { toast('숨 고르는 중… 잠시 후 다시 공격!'); return; }
+  const el = $('.boss'), items = bossItems();
+  const prev = (S.boss && S.boss.hits) || [];
+  const hits = [];
+  let tried = 0;
+  items.forEach(it => {
+    const q = $(`.bq[data-q="${it.id}"]`, el), ins = $$('input.orig', q);
+    const any = ins.some(i => i.value.trim());
+    const ok = ins.every(i => correct(i.dataset.key, i.value));
+    if (any) tried++;
+    if (ok) hits.push(it.id);
+    else ins.forEach(i => { if (i.value.trim() && S['w:' + i.dataset.key] === undefined && !correct(i.dataset.key, i.value)) S['w:' + i.dataset.key] = i.value; });
+    q.classList.toggle('bad', any && !ok); q.classList.toggle('ok', ok);
+    ins.forEach(i => { const w = i.closest('.blank'); const good = correct(i.dataset.key, i.value); w.classList.toggle('ok', good); w.classList.toggle('bad', !!i.value.trim() && !good); });
+  });
+  if (!tried) { toast('빈칸을 채워야 공격할 수 있어요'); return; }
+  S.boss = Object.assign({}, S.boss || {}, { hits, n: ((S.boss && S.boss.n) || 0) + 1 });
+  const gained = hits.filter(h => !prev.includes(h)).length;
+  if (gained) {
+    const mon = $('#mon'); mon.classList.remove('hit'); void mon.offsetWidth; mon.classList.add('hit');
+    const d = document.createElement('span'); d.className = 'dmg'; d.textContent = '-' + gained; mon.appendChild(d); setTimeout(() => d.remove(), 800);
+  }
+  if (hits.length === items.length && !S.boss.win) { S.boss.win = Date.now(); toast('카피몬 퇴치! 다시 생각해보기로 가요'); paintNav(); }
+  atkCool = Date.now() + 5000;
+  bossPaint(); paintHeader(); save();
+  $('.boss').scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+/* ---------- 제출 ---------- */
+function roomStatus(r) { const c = S['clr:' + r.key]; return c ? (c.how === 'key' ? '선생님 열쇠' : '스스로 탈출') : '미완료'; }
+function buildChecklist() {
+  const ul = $('#checklist'); if (!ul) return;
+  const lessonRows = SECS.filter(s => s.kind === 'lesson').map(s => { const si = SECS.indexOf(s), [d, n] = secStats(si); return `<li class="${d === n ? 'ok' : ''}"><span class="s">1차시 · ${esc(s.short)}</span><span class="c">${d}/${n}</span>${d === n ? '' : `<button type="button" data-go="${si}">이동</button>`}</li>`; }).join('');
+  const roomRows = ROOMS.map((r, i) => `<li class="${cleared(r.key) ? 'ok' : ''}"><span class="s">방 ${i + 1} · ${esc(r.short)}</span><span class="c">${roomStatus(r)}${S['att:' + r.key] ? ` · 시도 ${S['att:' + r.key]}회` : ''}</span></li>`).join('');
+  const hits = (S.boss && S.boss.hits || []).length;
+  if (!ROOMS.length) { ul.innerHTML = lessonRows; return; }
+  ul.innerHTML = lessonRows + roomRows + `<li class="${S.finalOK ? 'ok' : ''}"><span class="s">탈출문</span><span class="c">${S.finalOK ? '열림' : '닫힘'}</span></li><li class="${bossWon() ? 'ok' : ''}"><span class="s">카피몬</span><span class="c">${hits}/15 명중${bossWon() ? ' · 퇴치' : ''}</span></li>`;
+}
+let resetArm = 0;
+function resetAsk() {
+  if (Date.now() - resetArm < 4000) { S = {}; try { localStorage.removeItem(LS); } catch (e) {} render(); go(0); toast('모든 기록을 지웠어요'); resetArm = 0; return; }
+  resetArm = Date.now(); $('#resetMsg').textContent = '정말 지우려면 4초 안에 한 번 더 누르세요.';
+}
+
+/* ---------- 보고서 ---------- */
+function V(k) {
+  const v = S[k] || '', w = S['w:' + k];
+  return `<span class="rv${v ? '' : ' empty'}">${v ? esc(v) : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}</span>${w !== undefined && w !== v ? `<span class="rp-w">(처음: ${esc(w)})</span>` : ''}`;
+}
+const fillHTML = html => html.replace(/⟦(\w+)⟧/g, (_, id) => V('b:' + id));
+function txt(k) { const v = S[k] || ''; return v ? esc(v) : '<span style="color:#bbb">(미작성)</span>'; }
+function canReveal(sc) { return true; }
+const OKX = ok => `<span class="rp-ox ${ok ? 'o' : 'x'}">${ok ? '✔' : '✖'}</span>`;
+const LOCKED = '<div class="rp-ans lock">정답·해설은 방을 열거나 시간이 끝나면 보고서에 나와요.</div>';
+function ansBox(html) { return `<div class="rp-ans">${html}</div>`; }
+function units() {
+  const U = [], id = S['meta:id'] || '', nm = S['meta:name'] || '';
+  const hits = (S.boss && S.boss.hits || []).length;
+  U.push(`<div class="rp-head"><div class="k">Ⅴ. 디지털 문화 · 2. 디지털 윤리 · 학습지 5-⑤ · 장평중학교 정보</div><h1>저작권 보호 · ${PART === 1 ? '1차시 수사관 교육 노트' : PART === 2 ? '2차시 탈출 보고서' : '탈출 보고서'}</h1>
+    <div class="idrow"><span>학번 <b>${esc(id) || '　　'}</b></span><span>이름 <b>${esc(nm) || '　　'}</b></span><span>작성일 ${today()}</span></div>
+    ${ROOMS.length ? `<div class="rp-stats"><span>스스로 연 방 ${ROOMS.filter(r => (S['clr:' + r.key] || {}).how === 'self').length}/${ROOMS.length}</span><span>탈출문 ${S.finalOK ? '열림' : '닫힘'}</span><span>카피몬 ${hits}/15${bossWon() ? ' 퇴치' : ''}</span>${bossWon() && S.go ? `<span>탈출 시간 ${mmss(S.boss.win - S.go)}</span>` : ''}<span>조각 쿠폰 ${S.coupon || 0}/${D.coupons}장</span></div>` : `<div class="rp-stats"><span>조각 힌트 ${S.hintFree || 0}회</span></div>`}
+    <div class="rp-legend">${PART === 1 ? '파란 글씨: 내가 쓴 답' : '✔ 맞음 · ✖ 틀림 · <span style="color:#E3262C">빨간 글씨: 처음 틀린 답</span> · <span style="color:#17905E">초록 상자: 정답과 해설</span>'}</div></div>`);
+  if (ROOMS.length) U.push(`<div class="rp-u"><table class="rp-table"><tr><th>방</th><th>결과</th><th>자물쇠 시도</th></tr>${ROOMS.map((r, i) => `<tr><td>방 ${i + 1} ${esc(r.title)}</td><td>${roomStatus(r)}</td><td>${S['att:' + r.key] || 0}회</td></tr>`).join('')}</table></div>`);
+  const qs = SECS.filter(s => S['qa:' + s.key]);
+  if (qs.length) { U.push(`<div class="rp-sec">내 질문</div>`); qs.forEach(s => U.push(`<div class="rp-q"><b>${esc(s.short)}</b> ${esc(S['qa:' + s.key])}</div>`)); }
+  SECS.forEach((sc, si) => {
+    if (['start', 'gate', 'submit'].includes(sc.kind)) return;
+    if (sc.kind === 'final') { U.push(`<div class="rp-sec">${si}. ${esc(sc.title)}</div><div class="rp-u">${S.finalOK ? '문 열기 성공' : '미완료'} · 시도 ${S.finalAtt || 0}회</div>`); return; }
+    U.push(`<div class="rp-sec">${si}. ${esc(sc.title)}${sc.kind === 'room' ? ` <span style="font-weight:400;font-size:12px">— ${roomStatus(sc)}</span>` : ''}</div>`);
+    sc.blocks.forEach(b => {
+      if (b.t === 'text') {
+        const tmp = document.createElement('div'); tmp.innerHTML = fillHTML(b.html.replace(/<p class='note[^']*'>[\s\S]*?<\/p>/g, ''));
+        [...tmp.querySelectorAll('.def,.sub')].forEach(p => U.push(`<div class="rp-u">${p.outerHTML}</div>`));
+      } else if (b.t === 'judge') {
+        if (b.title) U.push(`<div class="rp-u" style="font-weight:700">${esc(b.title)}</div>`);
+        b.items.forEach((it, i) => {
+          const k = `j:${b.id}:${it.id}`, v = S[k], w = S['w:' + k];
+          const pv = b.compare ? prevVal(`j:${b.compare}:${it.id}`) : null;
+          const G = PART !== 1 && it.rec && D.hash[k];
+          let extra = '';
+          if (G) { const d = canReveal(sc) ? unobf(it.rec, k) : null; extra = d ? ansBox(`<b>정답 ${esc(d.a)}</b> · ${esc(d.why)}`) : LOCKED; }
+          U.push(`<div class="rp-blk"><div class="rp-row${b.reason ? '' : ' two'}"><div>${CIRC[i]} ${esc(it.q)}${b.compare ? `<div style="color:#777;font-size:11px">처음 판단: ${esc(pv || '—')}</div>` : ''}</div>
+            <div><span class="rp-st ${v ? tone(v) : ''}">${esc(v || '—')}</span> ${G && v ? OKX(correct(k, v)) : ''}${w !== undefined && w !== v ? `<div class="rp-w">(처음: ${esc(w)})</div>` : ''}</div>
+            ${b.reason ? `<div>${txt(`jr:${b.id}:${it.id}`)}</div>` : ''}</div>${extra}</div>`);
+        });
+      } else if (b.t === 'sort' && PART !== 1 && b.items[0].rec) {
+        const rv = canReveal(sc);
+        U.push(`<div class="rp-u" style="font-weight:700">${esc(b.title)}</div>`);
+        b.items.forEach(it => {
+          const k = `s:${b.id}:${it.id}`, v = S[k], has = v !== undefined && v !== -1, ok = has && correct(k, v), w = S['w:' + k];
+          const d = rv ? unobf(it.rec, k) : null;
+          U.push(`<div class="rp-row three"><div>${esc(it.label)}</div><div>${has ? esc(b.bins[v].name) : '<span style="color:#bbb">미분류</span>'} ${OKX(ok)}${w ? `<div class="rp-w">(처음: ${esc(w)})</div>` : ''}</div><div>${d ? `<span class="rp-ok">정답 ${esc(d.a)}</span>` : rv ? '' : '<span style="color:#aaa;font-size:11px">방을 열면 공개</span>'}</div></div>`);
+        });
+      } else if (b.t === 'sort') {
+        const rows = b.bins.map((bn, bi) => { const cs = b.items.filter(it => S[`s:${b.id}:${it.id}`] === bi); return `<div class="rp-bin"><b>${esc(bn.name)}</b> ${cs.map(it => { const w = S[`w:s:${b.id}:${it.id}`]; return `<span class="rp-chip${w ? ' cor' : ''}">${esc(it.label)}${w && w !== bn.name ? ` (처음: ${esc(w)})` : ''}</span>`; }).join('') || '<span style="color:#bbb">—</span>'}</div>`; }).join('');
+        const left = b.items.filter(it => { const v = S[`s:${b.id}:${it.id}`]; return v === undefined || v === -1; }).length;
+        U.push(`<div class="rp-u"><div style="font-weight:700">${esc(b.title)}</div>${rows}${left ? `<div style="color:#999">미분류 ${left}장</div>` : ''}</div>`);
+      } else if (b.t === 'order') {
+        const map = Object.fromEntries(b.items.map(it => [it.id, it]));
+        const ok = correct('o:' + b.id, validOrder(b).join(',')), d = b.rec && canReveal(sc) ? unobf(b.rec, 'o:' + b.id) : null;
+        U.push(`<div class="rp-blk"><div class="rp-u"><div style="font-weight:700">${esc(b.title)} ${b.rec ? OKX(ok) : ''}</div>${validOrder(b).map((id, i) => `<div>${i + 1}단계: ${esc(map[id].html)}</div>`).join('')}${S['w:o:' + b.id] ? `<div class="rp-w">처음 순서: ${esc(S['w:o:' + b.id])}</div>` : ''}</div>${b.rec ? (d ? ansBox('<b>정답 순서</b><br>' + d.a.map((x, i) => `${i + 1}단계: ${esc(x)}`).join('<br>')) : LOCKED) : ''}</div>`);
+      } else if (b.t === 'cite') {
+        const seq = S['c:' + b.id] || [];
+        const ok = correct('c:' + b.id, seq.join(',')), d = b.rec && canReveal(sc) ? unobf(b.rec, 'c:' + b.id) : null;
+        U.push(`<div class="rp-blk"><div class="rp-u"><div style="font-weight:700">${esc(b.title)} ${b.rec ? OKX(ok) : ''}</div><div class="rp-free"><div class="a">${seq.length ? esc(seq.map(x => tokLabel(b, x)).join(', ')) : '<span style="color:#bbb">(미작성)</span>'}</div>${S['w:c:' + b.id] ? `<div class="rp-w">처음: ${esc(S['w:c:' + b.id])}</div>` : ''}</div></div>${b.rec ? (d ? ansBox('<b>정답</b> ' + esc(d.a.join(', ').replace('@DATE@', today()))) : LOCKED) : ''}</div>`);
+      } else if (b.t === 'free') {
+        U.push(`<div class="rp-free"><div class="q">${esc(b.q)}</div><div class="a">${txt('f:' + b.id)}</div></div>`);
+      } else if (b.t === 'boss') {
+        const hs = (S.boss && S.boss.hits) || [];
+        U.push(`<div class="rp-u" style="font-weight:700">명중 ${hs.length} / ${b.items.length} · 공격 ${(S.boss && S.boss.n) || 0}회</div>`);
+        const rv = canReveal(sc);
+        b.items.forEach((it, i) => {
+          const ids = [...it.html.matchAll(/⟦(\w+)⟧/g)].map(m => m[1]);
+          const ok = ids.every(x => correct('b:' + x, S['b:' + x] || ''));
+          const ans = !ok && rv ? ids.map(x => { const d = D.blanks[x].rec ? unobf(D.blanks[x].rec, 'b:' + x) : null; return d ? esc(d.a) : ''; }).join(', ') : '';
+          U.push(`<div class="rp-u"><div class="def">${i + 1}. ${fillHTML(it.html)} ${OKX(ok)}${ans ? ` <span class="rp-ok">정답: ${ans}</span>` : ''}</div></div>`);
+        });
+        if (!rv) U.push(LOCKED);
+      }
+    });
+  });
+  return U;
+}
+function paginate() {
+  const host = $('#pages'); host.innerHTML = '';
+  const U = units(); let page = null; const pages = [];
+  const newPage = () => { page = document.createElement('div'); page.className = 'rpage'; host.appendChild(page); pages.push(page); };
+  newPage();
+  const limit = 1018 - 36 - 30;
+  U.forEach(u => {
+    const tmp = document.createElement('div'); tmp.innerHTML = u;
+    [...tmp.children].forEach(node => {
+      page.appendChild(node);
+      if (node.offsetTop + node.offsetHeight > limit && page.children.length > 1) {
+        node.remove(); newPage();
+        const prevPage = pages[pages.length - 2], last = prevPage.lastElementChild;
+        if (last && last.classList.contains('rp-sec')) page.appendChild(last);
+        page.appendChild(node);
+      }
+    });
+  });
+  const n = pages.length;
+  pages.forEach((p, i) => { const f = document.createElement('div'); f.className = 'pn'; f.textContent = `${S['meta:id'] || ''} ${S['meta:name'] || ''} · 학습지 5-⑤ 저작권 보호 · ${i + 1} / ${n}`; p.appendChild(f); });
+  return pages;
+}
+function fileName() { return `${(S['meta:id'] || '학번').trim()}_${(S['meta:name'] || '이름').trim()}_저작권보호${PART ? '_' + PART + '차시' : ''}`.replace(/[\\/:*?"<>|\s]+/g, '_'); }
+async function openReport() {
+  if (!S['meta:id'] || !S['meta:name']) { toast('먼저 0번에서 학번과 이름을 입력하세요'); go(0); return; }
+  $('#modal').hidden = false; document.body.style.overflow = 'hidden';
+  try { await document.fonts.ready; } catch (e) {}
+  paginate();
+}
+$('#mclose').onclick = () => { $('#modal').hidden = true; document.body.style.overflow = ''; };
+$('#pr').onclick = () => { const t = document.title; document.title = fileName(); window.print(); setTimeout(() => document.title = t, 1000); };
+$('#dl').onclick = async e => {
+  const btn = e.currentTarget;
+  if (!window.html2canvas || !window.jspdf) { toast('PDF 도구를 불러오지 못했어요. “인쇄로 저장”을 이용하세요'); return; }
+  btn.disabled = true; const old = btn.textContent;
+  try {
+    const pages = $$('.rpage', $('#pages'));
+    const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    for (let i = 0; i < pages.length; i++) {
+      btn.textContent = `만드는 중 ${i + 1}/${pages.length}`;
+      const c = await html2canvas(pages[i], { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false, windowWidth: 760 });
+      if (i) pdf.addPage();
+      pdf.addImage(c.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, 210, 297);
+    }
+    const blob = pdf.output('blob'), url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = fileName() + '.pdf'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    toast('PDF를 저장했어요. 클래스룸 과제에 첨부하세요!');
+  } catch (err) { console.error(err); toast('PDF 만들기에 실패했어요. “인쇄로 저장”을 이용하세요'); }
+  btn.disabled = false; btn.textContent = old;
+};
+
+render();
+ROOMS.forEach(r => { if (cleared(r.key)) revealRec(r.key); });
+go(cur);
+paintHeader(); updateProgress();
+</script>
+</body>
+</html>
